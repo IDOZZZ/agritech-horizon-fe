@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SmileyXEyes } from '@phosphor-icons/react';
-import { Button } from '../components/button';
+import { Button } from '@/components/button';
 
 // Define the Client Component part within the file
 function NotFoundClientContent() {
