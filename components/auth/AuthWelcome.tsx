@@ -1,6 +1,6 @@
 export default function AuthWelcome() {
   return (
-    <div className="flex-1 bg-gradient-to-br from-horizon-light to-horizon p-10 text-black rounded-l-2xl flex flex-col justify-between">
+    <div className="flex-1 bg-gradient-to-br from-horizon-light to-horizon p-10 text-black rounded-l-2xl flex flex-col justify-center">
       <div>
         <img src="/logo.png" alt="Horizon Logo" className="w-12 h-12 mb-4" />
         <h2 className="text-2xl font-bold mb-2">Welcome to Horizon</h2>

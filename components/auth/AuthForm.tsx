@@ -4,7 +4,7 @@ type Props = {
 
 export default function AuthForm({ type }: Props) {
   return (
-    <div className="flex-1 bg-white p-10 rounded-r-2xl shadow-lg">
+    <div className="flex-1 flex flex-col justify-center bg-white p-10 rounded-r-2xl shadow-lg">
       <h2 className="text-2xl font-bold mb-4">{type === 'login' ? 'Welcome Back' : 'Get Started'}</h2>
       <p className="text-sm mb-6">
         {type === 'login' ? "Belum punya akun? " : "Sudah punya akun? "}
