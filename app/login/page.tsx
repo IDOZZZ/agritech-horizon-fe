@@ -1,13 +1,20 @@
-import AuthWelcome from "@/components/auth/AuthWelcome";
-import AuthForm from "@/components/auth/AuthForm";
+"use client"
 
-export default function LoginPage() {
+import { useState } from "react"
+import WelcomeSlider from "@/components/auth/AuthWelcome"
+import AuthForm from "@/components/auth/AuthForm"
+
+export default function AuthLayout() {
+  const [authMode, setAuthMode] = useState<"login" | "register">("register")
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-horizon-light">
-      <div className="flex w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg">
-        <AuthWelcome />
-        <AuthForm type="login" />
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="card w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div className="grid lg:grid-cols-2 min-h-[600px]">
+          <WelcomeSlider />
+          <AuthForm mode={authMode} onModeChange={setAuthMode} />
+        </div>
       </div>
     </div>
-  );
+  )
 }

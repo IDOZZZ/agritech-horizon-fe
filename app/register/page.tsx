@@ -6,7 +6,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-horizon-light">
       <div className="flex w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg">
         <AuthWelcome />
-        <AuthForm type="login" />
+        <AuthForm mode="register" />
       </div>
     </div>
   );

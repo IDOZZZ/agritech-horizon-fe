@@ -9,16 +9,12 @@ export default function Home() {
       </p>
 
       <div className="flex space-x-4">
-        <Link href="">
-          <a className="px-6 py-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition">
-            Login
-          </a>
+        <Link href="/login" className= "px-6 py-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition">
+         Login
         </Link>
 
-        <Link href="/register">
-          <a className="px-6 py-2 rounded-2xl border border-blue-600 text-blue-600 hover:bg-blue-50 transition">
-            Register
-          </a>
+        <Link href="/register" className="px-6 py-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition">
+          Register
         </Link>
       </div>
     </div>
