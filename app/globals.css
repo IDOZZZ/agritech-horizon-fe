@@ -18,9 +18,10 @@
 
 /* 🌍 Variabel global */
 :root {
-  --color-brand: hsla(143, 81%, 31%, 1);
-  --color-brand-hover: hsla(143, 81%, 25%, 1);
+  --color-brand: #0F5028;
+  --color-brand-hover: #0c3f20; /* lebih gelap sedikit untuk efek hover */
   --color-brand-foreground: white;
+  --color-brand-transparent: rgba(15, 80, 40, 0.7);
 
   --font-heading: "Metropolis", sans-serif;
   --font-body: "Manrope", sans-serif;
@@ -35,10 +36,17 @@
 /* 🧠 Default body */
 body {
   font-family: var(--font-body);
-  color: var(--color-brand); /* Optional: kasih warna default */
 }
 
 /* 🏷️ Utility tambahan */
 .font-heading {
   font-family: var(--font-heading);
+}
+
+.brand-color {
+  background-color: var(--color-brand);
+}
+
+.color-slider {
+  background-color: var(--color-brand-transparent);
 }

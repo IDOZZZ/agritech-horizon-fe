@@ -32,33 +32,32 @@ export default function WelcomeSlider() {
 	}, [])
 
 	return (
-		<div className="relative flex flex-col justify-center w-full h-full min-h-[400px] overflow-hidden bg-emerald-500">
+		<div className="relative flex flex-col justify-center w-full h-full min-h-[400px] overflow-hidden color-slider">
 			<img
 				src="/farmer-1.jpg"
 				alt="Farming background"
-				className="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none select-none z-10"
+				className="absolute inset-0 z-10 object-cover w-full h-full pointer-events-none select-none opacity-15"
 			/>
 			{/* Content */}
-			<div className="relative z-20 p-8 lg:p-12 flex flex-col justify-center h-full ">
+			<div className="relative z-20 flex flex-col justify-center h-full p-8 lg:p-12 ">
 				{/* Logo */}
-				<div className="mb-8 ml-3 mt-2">
-					<div className="w-12 h-12 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center overflow-hidden">
-						<img
-							src="/logo-horizon-1.png"
-							alt="Horizon Logo"
-							className="max-w-full max-h-full object-contain rounded-lg shadow-md"
-							draggable="false"
-							style={{ background: 'none' }}
-						/>
-					</div>
-				</div>
+			<div className="mt-2 mb-8 ml-3">
+     <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[rgba(255,255,255,0.08)] backdrop-blur-sm">
+            <img
+                src="/logo-horizon-1.png"
+      alt="Horizon Logo"
+      className="object-contain max-w-full max-h-full rounded-lg drop-shadow-md"
+      draggable="false"
+             />
+    </div>
+</div>
 
 				{/* Slide Content */}
 				<div className="text-white mb-8 min-h-[200px] text-center">
-					<h1 className="font-heading text-4xl lg:text-5xl font-bold mb-4 transition-all duration-500 drop-shadow-lg">
+					<h1 className="mb-4 text-4xl font-bold transition-all duration-500 font-heading lg:text-5xl drop-shadow-lg">
 						{slides[currentSlide].title}
 					</h1>
-					<p className="text-lg opacity-95 leading-relaxed transition-all duration-500 drop-shadow-md">
+					<p className="text-lg leading-relaxed transition-all duration-500 opacity-95 drop-shadow-md">
 						{slides[currentSlide].subtitle}
 					</p>
 				</div>

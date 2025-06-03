@@ -91,7 +91,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
-                className="mt-2 h-12 border-gray-200 "
+                className="mt-2 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
                 required={!isLogin}
                 disabled={isLoading}
               />
@@ -157,7 +157,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
 
           <Button
             type="submit"
-            className="w-full h-12 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-[var(--color-brand-foreground)] disabled:opacity-50 font-medium rounded-xl transition-colors"
+            className="w-full h-12 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
             disabled={isLoading}
           >
             {isLoading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
