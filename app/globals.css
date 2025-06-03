@@ -1,22 +1,44 @@
-
-
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Metropolis:wght@700&display=swap');
-
-@layer theme {
-  :root {
-    --color-primary: #1ca96d;
-    --font-heading: 'Metropolis', sans-serif;
-    --font-body: 'Manrope', sans-serif;
-  }
+/* Font Metropolis (manual import) */
+@font-face {
+  font-family: "Metropolis";
+  src: url("/fonts/Metropolis-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Metropolis";
+  src: url("/fonts/Metropolis-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
+/* 🌍 Variabel global */
+:root {
+  --color-brand: hsla(143, 81%, 31%, 1);
+  --color-brand-hover: hsla(143, 81%, 25%, 1);
+  --color-brand-foreground: white;
+
+  --font-heading: "Metropolis", sans-serif;
+  --font-body: "Manrope", sans-serif;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+}
+
+/* 🧠 Default body */
 body {
   font-family: var(--font-body);
-  background-color: #f9fafb;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
+  color: var(--color-brand); /* Optional: kasih warna default */
+}
+
+/* 🏷️ Utility tambahan */
+.font-heading {
+  font-family: var(--font-heading);
 }

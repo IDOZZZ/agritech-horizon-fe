@@ -55,7 +55,7 @@ export default function WelcomeSlider() {
 
 				{/* Slide Content */}
 				<div className="text-white mb-8 min-h-[200px] text-center">
-					<h1 className="text-4xl lg:text-5xl font-bold mb-4 transition-all duration-500 drop-shadow-lg">
+					<h1 className="font-heading text-4xl lg:text-5xl font-bold mb-4 transition-all duration-500 drop-shadow-lg">
 						{slides[currentSlide].title}
 					</h1>
 					<p className="text-lg opacity-95 leading-relaxed transition-all duration-500 drop-shadow-md">
