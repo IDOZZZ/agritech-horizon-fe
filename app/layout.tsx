@@ -6,7 +6,7 @@ import "./globals.css"
 const manrope = Manrope({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Horizon",
+  title: "Horizon - Platform Pertanian Modern",
   description: "Login and Register for Horizon community platform",
 }
 

@@ -60,19 +60,19 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
   }
 
   return (
-    <div className="p-8 lg:p-12 flex flex-col justify-center bg-white">
-      <div className="max-w-sm mx-auto w-full">
+    <div className="flex flex-col justify-center p-8 bg-white lg:p-12">
+      <div className="w-full max-w-sm mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{isLogin ? "Welcome Back" : "Get Started"}</h2>
+          <h2 className="mb-2 text-3xl font-bold text-gray-900">{isLogin ? "Selamat Datang Kembali" : "Mulai Sekarang"}</h2>
           <p className="text-gray-600">
-            {isLogin ? "Don't have an account? " : "Already have account? "}
+            {isLogin ? "Belum punya akun? " : "Sudah punya akun? "}
             <button
               onClick={handleModeToggle}
-              className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+              className="font-medium transition-colors text-emerald-600 hover:text-emerald-700"
               disabled={isLoading}
             >
-              {isLogin ? "Sign Up" : "Sign In"}
+              {isLogin ? "Daftar" : "Masuk"}
             </button>
           </p>
         </div>
@@ -81,8 +81,8 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div>
-              <Label htmlFor="name" className="text-gray-700 font-medium">
-                Full Name
+              <Label htmlFor="name" className="font-medium text-gray-700">
+                Nama Lengkap
               </Label>
               <Input
                 id="name"
@@ -90,8 +90,8 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
                 type="text"
                 value={formData.name}
                 onChange={handleInputChange}
-                placeholder="Enter your full name"
-                className="mt-2 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                placeholder="Masukkan nama lengkap Anda"
+                className="h-12 mt-2 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
                 required={!isLogin}
                 disabled={isLoading}
               />
@@ -99,8 +99,8 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
           )}
 
           <div>
-            <Label htmlFor="email" className="text-gray-700 font-medium">
-              Email Address
+            <Label htmlFor="email" className="font-medium text-gray-700">
+              Alamat Email
             </Label>
             <Input
               id="email"
@@ -108,16 +108,16 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
               type="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Enter your email"
-              className="mt-2 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+              placeholder="Masukkan alamat email Anda"
+              className="h-12 mt-2 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
               required
               disabled={isLoading}
             />
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-gray-700 font-medium">
-              Password
+            <Label htmlFor="password" className="font-medium text-gray-700">
+              Kata Sandi
             </Label>
             <div className="relative mt-2">
               <Input
@@ -126,7 +126,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Enter your password"
+                placeholder="Masukkan kata sandi Anda"
                 className="h-12 pr-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
                 required
                 disabled={isLoading}
@@ -135,10 +135,10 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute text-gray-400 transition-colors transform -translate-y-1/2 right-3 top-1/2 hover:text-gray-600"
                 disabled={isLoading}
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -147,10 +147,10 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             <div className="text-right">
               <button
                 type="button"
-                className="text-sm text-emerald-600 hover:text-emerald-700 transition-colors"
+                className="text-sm transition-colors text-emerald-600 hover:text-emerald-700"
                 disabled={isLoading}
               >
-                Forgot Password?
+                Lupa Kata Sandi?
               </button>
             </div>
           )}
@@ -160,7 +160,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             className="w-full h-12 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] disabled:opacity-50 text-white font-medium rounded-xl transition-colors"
             disabled={isLoading}
           >
-            {isLoading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
+            {isLoading ? "Mohon tunggu..." : isLogin ? "Masuk" : "Buat Akun"}
           </Button>
         </form>
 
@@ -171,15 +171,15 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or {isLogin ? "sign in" : "sign up"} with</span>
+              <span className="px-4 text-gray-500 bg-white">Atau {isLogin ? "masuk" : "daftar"} dengan</span>
             </div>
           </div>
 
-          <div className="mt-6 flex justify-center space-x-4">
+          <div className="flex justify-center mt-6 space-x-4">
             <button
               type="button"
               onClick={() => handleSocialAuth("google")}
-              className="w-12 h-12 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center transition-colors disabled:opacity-50"
+              className="flex items-center justify-center w-12 h-12 transition-colors bg-gray-50 hover:bg-gray-100 rounded-xl disabled:opacity-50"
               disabled={isLoading}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -205,7 +205,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             <button
               type="button"
               onClick={() => handleSocialAuth("twitter")}
-              className="w-12 h-12 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center transition-colors disabled:opacity-50"
+              className="flex items-center justify-center w-12 h-12 transition-colors bg-gray-50 hover:bg-gray-100 rounded-xl disabled:opacity-50"
               disabled={isLoading}
             >
               <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
@@ -216,7 +216,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             <button
               type="button"
               onClick={() => handleSocialAuth("facebook")}
-              className="w-12 h-12 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center transition-colors disabled:opacity-50"
+              className="flex items-center justify-center w-12 h-12 transition-colors bg-gray-50 hover:bg-gray-100 rounded-xl disabled:opacity-50"
               disabled={isLoading}
             >
               <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">

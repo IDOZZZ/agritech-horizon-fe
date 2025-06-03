@@ -4,19 +4,19 @@ import { useState, useEffect } from "react"
 
 const slides = [
 	{
-		title: "Empowering Farmers, Growing Together!",
+		title: "Memberdayakan Petani, Tumbuh Bersama!",
 		subtitle:
-			"This platform helps educate farmers on the best agricultural practices, provides direct consultation with professionals, and offers live classes and educational articles.",
+			"Platform ini membantu mendidik petani tentang praktik pertanian terbaik, menyediakan konsultasi langsung dengan para profesional, serta menawarkan kelas langsung dan artikel edukasi.",
 	},
 	{
-		title: "Consult with Experts",
+		title: "Konsultasi dengan Ahli",
 		subtitle:
-			"Get personalized advice and solutions for your farming challenges by consulting directly with agricultural professionals.",
+			"Dapatkan saran dan solusi yang dipersonalisasi untuk tantangan pertanian Anda dengan berkonsultasi langsung dengan para profesional pertanian.",
 	},
 	{
-		title: "Learn & Grow",
+		title: "Belajar & Berkembang",
 		subtitle:
-			"Access live classes and a library of educational articles to improve your skills and knowledge in modern farming.",
+			"Akses kelas langsung dan perpustakaan artikel edukasi untuk meningkatkan keterampilan dan pengetahuan Anda dalam pertanian modern.",
 	},
 ]
 
