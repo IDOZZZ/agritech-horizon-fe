@@ -100,6 +100,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
   }
 
   return (
+
     <div className="flex flex-col justify-center p-8 bg-white lg:p-12">
       <div className="w-full max-w-sm mx-auto">
         {/* Header */}
@@ -116,6 +117,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             </button>
           </p>
         </div>
+
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
