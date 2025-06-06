@@ -10,7 +10,7 @@ const Vp = () => {
             <div className="w-[955px] text-black text-4xl font-semibold font-['Metropolis'] leading-[48px]">Horizon adalah platform edukasi digital yang dirancang khusus untuk petani Indonesia. Kami bantu kamu belajar dari nol hingga panen, dengan materi lokal yang praktis dan langsung bisa diterapkan di lahanmu.</div>
         </div>
         <div className="self-stretch px-20 gap-5 flex justify-center">
-            <div className="w-xs h-[472px] flex-col justify-start items-end gap-3 flex">
+            <div className="w-xs flex-col justify-start items-end gap-3 flex">
                 <Image src="/img/strawberry-farmer.jpeg" alt="Placeholder image" width={305} height={356} className="self-stretch bg-gradient-to-b from-[#265B3B]/10 to-[#265B3B]/10 rounded-sm" />
                 <Link href="#" className="w-fit px-6 py-0.5 bg-white rounded-sm outline-2 outline-offset-[-2px] outline-black gap-3.5">
                         <ArrowLeft size={32} weight='bold' />
