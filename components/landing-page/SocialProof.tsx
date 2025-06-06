@@ -2,22 +2,22 @@ import React from 'react';
 
 const SocialProof = () => {
   return (
-    <div className="self-stretch h-[329px] p-10 bg-white justify-start items-center gap-5 inline-flex">
-        <div className="w-[325px] px-6 py-10 rounded-sm flex-col justify-start items-start gap-8 inline-flex">
-            <div className="self-stretch text-black text-6xl font-bold font-['Metropolis'] leading-[76.80px] word-wrap">400+</div>
-            <div className="self-stretch text-[#424152] text-lg font-normal font-['Manrope'] leading-[30px] word-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
+    <div className="flex p-10 bg-white justify-center items-center gap-5">
+        <div className="px-6 py-10 flex flex-col justify-start gap-8">
+            <div className="text-black text-6xl font-bold font-['Metropolis'] leading-20">400+</div>
+            <div className="text-gray-600 text-lg font-normal font-['Manrope'] leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
         </div>
-        <div className="w-[325px] px-6 py-10 rounded-sm flex-col justify-start items-start gap-8 inline-flex">
-            <div className="self-stretch text-black text-6xl font-bold font-['Metropolis'] leading-[76.80px] word-wrap">250+</div>
-            <div className="self-stretch text-[#424152] text-lg font-normal font-['Manrope'] leading-[30px] word-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
+        <div className="px-6 py-10 flex flex-col justify-start gap-8">
+            <div className="text-black text-6xl font-bold font-['Metropolis'] leading-20">250+</div>
+            <div className="text-gray-600 text-lg font-normal font-['Manrope'] leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
         </div>
-        <div className="w-[325px] px-6 py-10 rounded-sm flex-col justify-start items-start gap-8 inline-flex">
-            <div className="self-stretch text-black text-6xl font-bold font-['Metropolis'] leading-[76.80px] word-wrap">150+</div>
-            <div className="self-stretch text-[#424152] text-lg font-normal font-['Manrope'] leading-[30px] word-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
+        <div className="px-6 py-10 flex flex-col justify-start gap-8">
+            <div className="text-black text-6xl font-bold font-['Metropolis'] leading-20">150+</div>
+            <div className="text-gray-600 text-lg font-normal font-['Manrope'] leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
         </div>
-        <div className="w-[325px] px-6 py-10 rounded-sm flex-col justify-start items-start gap-8 inline-flex">
-            <div className="self-stretch text-black text-6xl font-bold font-['Metropolis'] leading-[76.80px] word-wrap">1st</div>
-            <div className="self-stretch text-[#424152] text-lg font-normal font-['Manrope'] leading-[30px] word-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
+        <div className="px-6 py-10 flex flex-col justify-start gap-8">
+            <div className="text-black text-6xl font-bold font-['Metropolis'] leading-20">1st</div>
+            <div className="text-gray-600 text-lg font-normal font-['Manrope'] leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit </div>
         </div>
     </div>
   );
