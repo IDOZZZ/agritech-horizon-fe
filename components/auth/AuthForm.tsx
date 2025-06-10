@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
+import { httpRequest } from "@/lib/http"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 interface AuthFormProps {
   mode?: "login" | "register"
@@ -16,6 +19,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
   const [isLogin, setIsLogin] = useState(mode === "login")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -55,40 +59,67 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setErrorMessage(null) // Reset error message
 
+    // Validate email format
     if (!validateEmail(formData.email)) {
-      alert("Format email tidak valid.")
+      setErrorMessage("Format email tidak valid.") // Show error as toast notification
       setIsLoading(false)
       return
     }
 
+    // Validate password length
     if (!validatePassword(formData.password)) {
-      alert("Kata sandi harus memiliki minimal 6 karakter.")
+      setErrorMessage("Kata sandi harus memiliki minimal 6 karakter.")
+      setIsLoading(false)
+      return
+    }
+
+    // Ensure all required fields are filled
+    if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
+      setErrorMessage("Semua bidang harus diisi.")
       setIsLoading(false)
       return
     }
 
     try {
-      const response = await fetch(`/api/${isLogin ? "login" : "register"}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      const endpoint = isLogin ? "/api/auth/local" : "/api/auth/local/register";
+      const payload = isLogin
+        ? { identifier: formData.email, password: formData.password }
+        : { username: formData.name, email: formData.email, password: formData.password };
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        alert(errorData.message || "Terjadi kesalahan, silakan coba lagi.")
-        return
+      // console.log("Payload to send:", payload);
+      const data = await httpRequest(endpoint, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (data.error) {
+        const userFriendlyMessage = isLogin
+          ? "Email atau password salah."
+          : data.message.includes("Bad Request")
+          ? "Akun sudah ada, silakan gunakan email atau nama pengguna lain."
+          : data.message;
+        setErrorMessage(userFriendlyMessage); // Set user-friendly error message
+        return;
+      }
+      
+      console.log("Form submitted successfully:", data);
+
+      if (isLogin) {
+        localStorage.setItem("token", data.jwt); // Store JWT token for authenticated requests
+        setErrorMessage(null); // Clear any previous error messages
       }
 
-      const data = await response.json()
-      console.log("Form submitted successfully:", data)
-      // Redirect or show success message
+      // Display success message in UI instead of toast
+      setErrorMessage(isLogin ? "Login berhasil!" : "Registrasi berhasil!");
+      setTimeout(() => {
+        window.location.href = "/courses"; // Example redirect
+      }, 2000);
     } catch (error) {
-      console.error("Auth error:", error)
-      alert("Terjadi kesalahan, silakan coba lagi.")
+      console.error("Error caught in handleSubmit:", error);
+      setErrorMessage("Terjadi kesalahan yang tidak diketahui, silakan coba lagi.");
+      toast.error("Terjadi kesalahan yang tidak diketahui, silakan coba lagi.");
     } finally {
       setIsLoading(false)
     }
@@ -117,7 +148,6 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             </button>
           </p>
         </div>
-
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -206,6 +236,16 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             {isLoading ? "Mohon tunggu..." : isLogin ? "Masuk" : "Buat Akun"}
           </Button>
         </form>
+
+        {/* Error Message */}
+        {errorMessage && errorMessage !== "Login berhasil!" && (
+          <div className="mt-4 text-sm text-red-600">{errorMessage}</div>
+        )}
+
+        {/* Success Message */}
+        {errorMessage === "Login berhasil!" && (
+          <div className="mt-4 text-sm text-green-600">{errorMessage}</div>
+        )}
 
         {/* Social login */}
         <div className="mt-8">

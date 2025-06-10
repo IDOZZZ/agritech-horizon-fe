@@ -1,11 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import WelcomeSlider from "@/components/auth/AuthWelcome"
 import AuthForm from "@/components/auth/AuthForm"
 
 export default function AuthLayout() {
   const [authMode, setAuthMode] = useState<"login" | "register">("register")
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      window.location.href = "/courses"
+    }
+  }, [])
 
   return (
   <div className="flex items-center justify-center min-h-screen p-4 bg-white">
