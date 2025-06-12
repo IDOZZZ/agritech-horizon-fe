@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const FinalCta = () => {
@@ -8,12 +9,12 @@ const FinalCta = () => {
           <p className="text-white text-4xl font-normal font-heading leading-12">Akses materi aplikatif, mentor berpengalaman, dan komunitas petani seluruh Indonesia.</p>
         </div>
         <div className="justify-start items-center gap-5 inline-flex">
-            <div data-color="Primary" data-kind="Primary" data-round="Squire" data-state="Default" className="h-11 px-7 py-3 bg-white rounded-sm">
-                <div className="text-center text-[#0F5028] text-base font-medium font-['Manrope'] leading-6">Belajar Sekarang</div>
-            </div>
-            <div data-color="Secondary" data-kind="Secondary" data-round="Squire" data-state="Default" className="h-11 px-7 py-3 rounded-sm outline-1 outline-offset-[-1px] outline-white">
-                <div className="text-center text-white text-base font-medium font-['Manrope'] leading-6">Lihat Selengkapnya</div>
-            </div>
+            <Link href="/register" className="w-fit h-fit px-7 py-2.5 bg-white rounded-sm">
+                <div className="text-center text-[#0F5028] text-base font-medium font-['Manrope']">Belajar Sekarang</div>
+            </Link>
+            <Link href="/about-us" className="w-fit h-fit px-7 py-2.5 rounded-sm outline-1 outline-offset-[-1px] outline-white">
+                <div className="text-center text-white text-base font-medium font-['Manrope']">Lihat Selengkapnya</div>
+            </Link>
         </div>
     </div>
   );
