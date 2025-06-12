@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
+/* Font Metropolis (manual import) */
+@font-face {
+  font-family: "Metropolis";
+  src: url("/fonts/Metropolis-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Metropolis";
+  src: url("/fonts/Metropolis-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 🌍 Variabel global */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-brand: #0F5028;
+  --color-brand-hover: #0c3f20; /* lebih gelap sedikit untuk efek hover */
+  --color-brand-foreground: white;
+  --color-brand-transparent: rgba(15, 80, 40, 0.7);
+
+  --font-heading: "Metropolis", sans-serif;
+  --font-body: "Manrope", sans-serif;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground:  #171717;
-  }
-}
-
+/* 🧠 Default body */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* 🏷️ Utility tambahan */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.brand-color {
+  background-color: var(--color-brand);
+}
+
+.color-slider {
+  background-color: var(--color-brand-transparent);
 }
