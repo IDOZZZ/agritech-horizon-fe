@@ -59,23 +59,20 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setErrorMessage(null) // Reset error message
+    setErrorMessage(null)
 
-    // Validate email format
     if (!validateEmail(formData.email)) {
-      setErrorMessage("Format email tidak valid.") // Show error as toast notification
+      setErrorMessage("Format email tidak valid.")
       setIsLoading(false)
       return
     }
 
-    // Validate password length
     if (!validatePassword(formData.password)) {
       setErrorMessage("Kata sandi harus memiliki minimal 6 karakter.")
       setIsLoading(false)
       return
     }
 
-    // Ensure all required fields are filled
     if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
       setErrorMessage("Semua bidang harus diisi.")
       setIsLoading(false)
@@ -88,7 +85,6 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
         ? { identifier: formData.email, password: formData.password }
         : { username: formData.name, email: formData.email, password: formData.password };
 
-      // console.log("Payload to send:", payload);
       const data = await httpRequest(endpoint, {
         method: "POST",
         body: JSON.stringify(payload),
@@ -102,14 +98,14 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
           : data.message.includes("username")
           ? "Nama pengguna sudah ada, silakan gunakan nama lain."
           : "Terjadi kesalahan, silakan coba lagi.";
-        setErrorMessage(userFriendlyMessage); // Set user-friendly error message
+        setErrorMessage(userFriendlyMessage);
         return;
       }
       
-      console.log("Form submitted successfully:", data);
-
-      if (isLogin) {
-        localStorage.setItem("token", data.jwt); // Store JWT token for authenticated requests
+      console.log("Form submitted successfully:", data);      if (isLogin) {
+        // Store token in both localStorage and cookie
+        localStorage.setItem("token", data.jwt);
+        document.cookie = `token=${data.jwt}; path=/`;
         setErrorMessage(null); // Clear any previous error messages
       }
 

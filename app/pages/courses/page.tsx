@@ -18,7 +18,6 @@ const CoursesPage = () => {
 
   return (
     <div className="p-8">
-      <h1 className="mb-6 text-3xl font-bold">Temukan Kelas sesuai dengan Kebutuhanmu</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {courses.map((course, index) => (
           <div key={index} className="p-4 border rounded-lg shadow-md">
