@@ -1,0 +1,15 @@
+.testimonial-section {
+  --slide-height: 19rem;
+}
+
+.testimonial-section>.embla__viewport {
+  height: calc(var(--slide-height) + (var(--slide-height) / 2));
+} 
+
+.embla__container {
+  touch-action: pan-y pinch-zoom;
+}
+
+.embla__slide {
+  min-width: 0;
+}

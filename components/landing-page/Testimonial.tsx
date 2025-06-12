@@ -1,191 +1,116 @@
-"use client";
-
-import React, { useEffect, useState, useCallback } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
+import { EmblaOptionsType } from 'embla-carousel'
+import Autoplay from 'embla-carousel-autoplay'
+import useEmblaCarousel from 'embla-carousel-react'
+import '../../styles/embla.css';
+import { StarHalfIcon, StarIcon } from '@phosphor-icons/react';
 
-const testimonials = [
-    {
-        name: "Ahmad Ramadhan",
-        location: "Magelang, Jawa Tengah",
-        rating: "4,5",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus",
-        image: "https://placehold.co/100x100"
-    },
-    {
-        name: "Faizal Arafi",
-        location: "Surakarta, Jawa Tengah",
-        rating: "4,5",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus",
-        image: "https://placehold.co/100x100"
-    },
-    {
-        name: "Naufal Aldi",
-        location: "Magetan, Jawa Timur",
-        rating: "4,5",
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus",
-        image: "https://placehold.co/100x100"
-    },
-    {
-        name: "Customer Four",
-        location: "City, Province",
-        rating: "4,5",
-        text: "Another testimonial text goes here.",
-        image: "https://placehold.co/100x100"
-    },
-    {
-        name: "Customer Five",
-        location: "City, Province",
-        rating: "4,5",
-        text: "Yet another testimonial text.",
-        image: "https://placehold.co/100x100"
-    }
-];
-
-const Testimonial = () => {
-    const autoplayOptions = {
-        delay: 3000, // Delay in milliseconds
-        stopOnInteraction: false, // Continue autoplay on user interaction
-        stopOnMouseEnter: true, // Stop autoplay on mouse enter
-    };
-
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay(autoplayOptions)]);
+const Testimonial : React.FC = () => {
+    const OPTIONS: EmblaOptionsType = { loop: true };
+    const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [Autoplay({ delay: 5000 })])
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [scrollSnaps, setScrollSnaps] = useState([]);
-
-    const scrollTo = useCallback((index: number) => {
-        emblaApi?.scrollTo(index);
-    }, [emblaApi]);
-
-    const onInit = useCallback((emblaApi) => {
-        if (emblaApi) {
-            setScrollSnaps(emblaApi.scrollSnapList());
-        }
-    }, []);
-
-    const onSelect = useCallback((emblaApi) => {
-        if (emblaApi) {
-            setSelectedIndex(emblaApi.selectedScrollSnap());
-        }
-    }, []);
 
     useEffect(() => {
-        if (!emblaApi) return;
+      if (!emblaApi) return;
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+      emblaApi.on('select', () => setSelectedIndex(emblaApi.selectedScrollSnap()));
+    }, [emblaApi]);
 
-        onInit(emblaApi);
-        onSelect(emblaApi);
-        emblaApi.on('reInit', onInit);
-        emblaApi.on('reInit', onSelect);
-        emblaApi.on('select', onSelect);
-    }, [emblaApi, onInit, onSelect]);
 
-    return (
-        <div className="self-stretch p-20 bg-[#F5FCF7] flex-col justify-start items-start gap-10 flex">
-            <div className="w-3/4 text-black text-6xl font-semibold font-['Metropolis']">Lihat apa yang pelanggan kami katakan</div>
+    const testimonials = [
+      {
+        image: "https://placehold.co/100x100",
+        name: "Ahmad Ramadhan",
+        location: "Magelang, Jawa Tengah",
+        rating: "4.3",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus "
+      },
+      {
+        image: "https://placehold.co/100x100",
+        name: "Faizal Arafi",
+        location: "Surakarta, Jawa Tengah",
+        rating: "2.5",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus "
+      },
+      {
+        image: "https://placehold.co/100x100",
+        name: "Naufal Aldi",
+        location: "Magetan, Jawa Timur",
+        rating: "4.0",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus "
+      },
+      {
+        image: "https://placehold.co/100x100",
+        name: "Naufal Aldi",
+        location: "Magetan, Jawa Timur",
+        rating: "2.0",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus "
+      },
+      {
+        image: "https://placehold.co/100x100",
+        name: "Naufal Aldi",
+        location: "Magetan, Jawa Timur",
+        rating: "1",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus euismod dictum egestas orci netus "
+      },
+    ];
 
-            <div className="embla" ref={emblaRef}>
-                <div className="embla__container">
-                    {testimonials.map((testimonial, index) => (
-                        <div className={`embla__slide ${index === selectedIndex ? 'embla__slide--centered' : ''}`} key={index}>
-                            <div className="testimonial-item">
-                                <div className="w-[413px] h-[418px] flex-col justify-end items-start flex">
-                                    <div className="self-stretch h-[309px] p-6 bg-white flex-col justify-start items-start gap-4 flex">
-                                        <div className="self-stretch justify-start items-center gap-3 flex">
-                                            <Image src={testimonial.image} alt="Customer testimonial image" width={100} height={100} className="rounded-full" />
-                                            <div className="w-[216px] flex-col justify-start items-start gap-0.5 flex">
-                                                <div className="text-center text-black text-2xl font-semibold font-['Metropolis']">{testimonial.name}</div>
-                                                <div className="text-center text-black text-base font-normal font-['Manrope']">{testimonial.location}</div>
-                                                <div className="justify-start items-end gap-0.5 flex">
-                                                    <div className="text-center text-black text-base font-normal font-['Manrope']">{testimonial.rating}</div>
-                                                    <div className="justify-start items-center gap-0.5 flex"></div>
-                                                </div>
+  return (
+    <div className="self-stretch p-20 bg-[#F5FCF7] flex-col justify-start items-start gap-10 flex">
+        <div className="w-2/3 text-black text-6xl font-semibold font-heading">Lihat apa yang pelanggan kami katakan</div>
+
+        <div className="embla testimonial-section w-full max-w-full m-auto">
+          <div className="embla__viewport flex flex-col justify-end h-full overflow-hidden" ref={emblaRef}>
+            <div className="embla__container flex h-auto">
+                {/* start foreach */}
+                {testimonials.map((testimonial, index) => (
+                    <div key={index} className={`embla__slide pl-4 min-w-0 flex-grow-0 flex-shrink-0 basis-1/3 justify-center ${index === selectedIndex ? 'transition duration-300 ease-in-out -translate-y-1/2' : ''}`}>
+                        <div className="flex-col justify-end items-start inline-flex">
+                            <div className="self-stretch h-[309px] p-6 bg-white flex-col justify-start items-start gap-4 flex">
+                                <div className="self-stretch justify-start items-center gap-3 inline-flex">
+                                    <Image src={testimonial.image} alt="Customer testimonial image" width={100} height={100} className="rounded-full" />
+                                    <div className="w-[216px] flex-col justify-start items-start gap-0.5 inline-flex">
+                                        <div className="text-center text-black text-2xl font-semibold font-heading">{testimonial.name}</div>
+                                        <div className="text-center text-black text-base font-normal font-['Manrope']">{testimonial.location}</div>
+                                        <div className="justify-start items-end gap-0.5 inline-flex">
+                                            <div className="text-center text-black text-base font-normal font-['Manrope']">{testimonial.rating}</div>
+                                            <div className="justify-start items-center gap-0.5 flex">
+                                              {[...Array(5).keys()].map((i) => (
+                                                <React.Fragment key={i}>
+                                                  {i < Math.floor(Number(testimonial.rating)) && <StarIcon size={24} color="#fbbc05" weight='fill' />}
+                                                  {i === Math.floor(Number(testimonial.rating)) && Number(testimonial.rating) % 1 !== 0 ? (
+                                                    <StarHalfIcon size={24} color="#fbbc05" weight='fill' />
+                                                  ) : (
+                                                    i >= Math.ceil(Number(testimonial.rating)) && <StarIcon size={24} color="#fbbc05" weight='regular' />
+                                                  )}
+                                                </React.Fragment>
+                                              ))}
                                             </div>
                                         </div>
-                                        <div className="w-[339px] text-black text-2xl font-normal font-['Manrope'] leading-[28.80px]">{testimonial.text}</div>
                                     </div>
                                 </div>
+                                <div className="w-full text-black text-2xl font-normal font-['Manrope'] leading-7">{testimonial.text}</div>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Navigation Dots */}
-            <div className="embla__dots">
-                {scrollSnaps.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`embla__dot ${index === selectedIndex ? 'embla__dot--selected' : ''}`}
-                        type="button"
-                        onClick={() => scrollTo(index)}
-                    ></button>
+                    </div>
                 ))}
             </div>
-
-            {/* Embla CSS and Dot Styling */}
-            <style>{`
-                .embla {
-                  overflow: hidden;
-                  width: 100%;
-                }
-                .embla__container {
-                  display: flex;
-                  user-select: none;
-                  -webkit-touch-callout: none;
-                  -khtml-user-select: none;
-                  -webkit-tap-highlight-color: transparent;
-                  margin-left: -10px;
-                }
-                .embla__slide {
-                  flex: 0 0 100%;
-                  min-width: 0;
-                  padding-left: 10px;
-                  transition: transform 0.3s ease-in-out; /* Add transition for smooth animation */
-                  will-change: transform; /* Hint to the browser for smoother animation */
-                }
-
-                /* Responsive adjustments for Embla */
-                @media (min-width: 600px) {
-                    .embla__slide {
-                        flex: 0 0 50%;
-                    }
-                }
-
-                @media (min-width: 1024px) {
-                    .embla__slide {
-                        flex: 0 0 33.33%;
-                    }
-                }
-
-                /* Dot Styling */
-                .embla__dots {
-                    display: flex;
-                    justify-content: flex-start;
-                    margin-top: 20px;
-                }
-                .embla__dot {
-                    width: 10px;
-                    height: 10px;
-                    background-color: #ccc; /* Gray color for all dots */
-                    border-radius: 50%;
-                    margin: 0 5px;
-                    cursor: pointer;
-                    border: none;
-                    padding: 0;
-                    outline: none;
-                }
-                .embla__dot--selected {
-                    background-color: #888; /* Slightly darker gray for the active dot */
-                }
-
-                /* Centered Slide Animation */
-                .embla__slide--centered {
-                    transform: translateY(-30px); /* Increase the lift for the centered slide */
-                }
-            `}</style>
+          </div>
         </div>
-    );
+        {/* The swipe buttons are now dynamic pagination dots */}
+        <div className="m-auto justify-center items-center gap-1.5 inline-flex">
+            {testimonials.map((_, index) => (
+                <button
+                    key={index}
+                    className={`w-[18px] h-[18px] rounded-full border-[2.25px] border-[#D4D4D4] ${index === selectedIndex ? 'bg-[#D4D4D4]' : ''}`}
+                    onClick={() => emblaApi && emblaApi.scrollTo(index)}
+                ></button>
+            ))}
+        </div>
+    </div>
+  );
 };
 
 export default Testimonial;
