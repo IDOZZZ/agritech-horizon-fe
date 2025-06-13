@@ -109,10 +109,8 @@ export default function CourseSelection() {
       {/* Header dalam container */}
       <div className="container px-4 mx-auto mb-12">
         <SectionHeader title="Temukan Kelas sesuai dengan Kebutuhanmu" />
-      </div>
-
-      {/* Scrollable container yang dimulai dari posisi yang sama dengan container */}
-      <div className="overflow-x-auto scrollbar-hide">
+      </div>      {/* Scrollable container dengan hidden scrollbar */}
+      <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]">
         <div className="container mx-auto" style={{ maxWidth: "1550px" }}>
           <div className="grid grid-rows-2 gap-6 pb-4 pl-4 pr-4" style={{ width: "max-content" }}>
             {/* Row 1 */}

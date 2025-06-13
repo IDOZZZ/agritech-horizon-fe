@@ -48,23 +48,17 @@ const Testimonial = () => {
         delay: 3000, // Delay in milliseconds
         stopOnInteraction: false, // Continue autoplay on user interaction
         stopOnMouseEnter: true, // Stop autoplay on mouse enter
-    };
-
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay(autoplayOptions)]);
+    };    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay(autoplayOptions)]);
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [scrollSnaps, setScrollSnaps] = useState([]);
+    const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
     const scrollTo = useCallback((index: number) => {
         emblaApi?.scrollTo(index);
-    }, [emblaApi]);
-
-    const onInit = useCallback((emblaApi) => {
+    }, [emblaApi]);    const onInit = useCallback((emblaApi: any) => {
         if (emblaApi) {
             setScrollSnaps(emblaApi.scrollSnapList());
         }
-    }, []);
-
-    const onSelect = useCallback((emblaApi) => {
+    }, []);    const onSelect = useCallback((emblaApi: any) => {
         if (emblaApi) {
             setSelectedIndex(emblaApi.selectedScrollSnap());
         }
@@ -91,7 +85,7 @@ const Testimonial = () => {
                             <div className="testimonial-item">
                                 <div className="w-[413px] h-[418px] flex-col justify-end items-start flex">
                                     <div className="self-stretch h-[309px] p-6 bg-white flex-col justify-start items-start gap-4 flex">
-                                        <div className="self-stretch justify-start items-center gap-3 flex">
+                                        <div className="flex items-center self-stretch justify-start gap-3">
                                             <Image src={testimonial.image} alt="Customer testimonial image" width={100} height={100} className="rounded-full" />
                                             <div className="w-[216px] flex-col justify-start items-start gap-0.5 flex">
                                                 <div className="text-center text-black text-2xl font-semibold font-['Metropolis']">{testimonial.name}</div>

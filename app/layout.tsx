@@ -16,10 +16,9 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-}) {
-  const pathname = usePathname()
-  const isLoginPage = pathname === "/login"
-  const isRestrictedPage = ["/login", "/"].includes(pathname)
+}) {  const pathname = usePathname()
+  const isAuthPage = pathname === "/login" || pathname === "/register"
+  const isRestrictedPage = ["/login", "/register", "/"].includes(pathname)
 
   useEffect(() => {
     if (isRestrictedPage) {
@@ -34,9 +33,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={manrope.className}>
         <ToastContainer />
-        {!isLoginPage && <Navbar />}
+        {!isAuthPage && <Navbar />}
         {children}
-        {!isLoginPage && <Footer />}
+        {!isAuthPage && <Footer />}
       </body>
     </html>
   )
