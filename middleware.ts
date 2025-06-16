@@ -3,22 +3,19 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
-  const isAuthPage = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/'
-  const isProtectedPage = request.nextUrl.pathname.startsWith('/courses')
+  const isAuthPage = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register' // Tambahkan /register jika itu juga halaman otentikasi
 
-  // If user is on auth page and has token, redirect to courses
+  // Jika pengguna berada di halaman otentikasi dan memiliki token, arahkan ke /courses
   if (isAuthPage && token) {
     return NextResponse.redirect(new URL('/courses', request.url))
   }
 
-  // If user is on protected page and has no token, redirect to login
-  if (isProtectedPage && !token) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
+  // Halaman utama (/) dan halaman kursus (/courses) tidak memerlukan otentikasi
+  // Jadi, tidak ada pengalihan paksa ke login untuk halaman-halaman ini.
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/', '/login', '/courses/:path*']
+  matcher: ['/', '/login', '/register', '/courses/:path*'] // Pastikan semua path yang relevan dicocokkan
 }

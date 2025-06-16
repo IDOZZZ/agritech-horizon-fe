@@ -19,7 +19,7 @@ export default function HeroSection() {
 
         {/* Content */}
         <div className="order-1 space-y-6 lg:order-2">
-          <h1 className="text-4xl font-bold leading-tight text-gray-900 lg:text-5xl">
+          <h1 className="text-4xl font-bold leading-tight text-gray-900 font-heading lg:text-5xl">
             Tingkatkan Keahlian Pertanianmu bersama kami
           </h1>
 

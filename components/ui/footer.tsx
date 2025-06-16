@@ -8,24 +8,22 @@ export default function Footer() {
       <div className="container px-4 py-8 mx-auto">
         <div className="grid grid-cols-1 gap-8 mb-6 md:grid-cols-4">
           {/* Logo dan Deskripsi */}
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-6 h-6 bg-green-600 rounded">
-                <span className="text-xs font-bold text-white">L</span>
-              </div>
-              <span className="text-lg font-semibold text-gray-900">Logoipsum</span>
+          <div className="space-y-4"> {/* Tambah sedikit ruang */}
+            <div className="flex items-center">
+              {/* Menggunakan gambar logo */}
+              <img src="/img/horizon-logo-green.png" alt="Agritech Horizon Logo" className="w-auto h-10" /> {/* Sesuaikan ukuran */}
             </div>
-            <p className="pr-4 text-xs leading-relaxed text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <p className="pr-4 text-sm leading-relaxed text-gray-600"> {/* Ubah ukuran font dan leading */}
+              Agritech Horizon adalah platform edukasi terkemuka untuk pertanian modern. Kami menyediakan kursus praktis dan mendalam untuk membantu Anda menguasai teknik pertanian inovatif dan berkelanjutan.
             </p>
           </div>
+
 
           {/* Kontak */}
           <div className="space-y-3">
             <div className="space-y-1 text-xs text-gray-700">
               <p className="font-medium">+6281234567890</p>
-              <p>hello@logoipsum.com</p>
+              <p>horizon.appp@gmail.com</p>
             </div>
             <div className="text-xs leading-relaxed text-gray-600">
               <p>Jl. Sinar Baru No. 89,</p>

@@ -25,7 +25,7 @@ export default function CourseCard({ title, description, image, category }: Cour
           <div className="flex items-center">
             <Link
               href="#"
-              className="w-full px-4 py-2 text-sm font-medium text-center text-white transition-colors bg-green-700 rounded hover:bg-green-600"
+              className="w-full px-4 py-2 text-sm font-medium text-center text-white transition-colors rounded bg-[var(--color-brand)] hover:bg-[var(--color-brand)]/90"
             >
               Belajar Sekarang
             </Link>

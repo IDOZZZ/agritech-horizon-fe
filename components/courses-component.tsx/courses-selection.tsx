@@ -37,32 +37,41 @@ export default function CourseSelection() {
         // Asumsi struktur data Strapi: respons dibungkus dalam objek 'data',
         // dan array sebenarnya ada di 'response.data.data'.
         // Setiap item memiliki 'attributes' dan di dalamnya ada 'title', 'description', 'thumbnail'.
-        const modules = response.data && Array.isArray(response.data.data) ? response.data.data : [];
+        console.log("Response from Strapi:", response.data); // Log response untuk debugging
+        const modules = response.data && Array.isArray(response.data) ? response.data : [];
 
         const fetchedCourses: Course[] = modules.map((item: any) => ({
           id: item.id,
-          title: item.attributes.title,
-          description: item.attributes.description,
-          // Pastikan URL gambar lengkap, tambahkan BASE_URL jika perlu
-          image: item.attributes.thumbnail?.data?.attributes?.url
-            ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.attributes.thumbnail.data.attributes.url}`
+          title: item.title, // Akses langsung dari item
+          description: item.description, // Akses langsung dari item
+          // Pastikan URL gambar lengkap, ambil dari formats.large.url atau langsung url
+          image: item.thumbnail?.formats?.large?.url
+            ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.thumbnail.formats.large.url}`
+            : item.thumbnail?.url
+            ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.thumbnail.url}`
             : "/farming.jpg", // Fallback image jika tidak ada thumbnail dari Strapi
-          category: item.attributes.category || "Umum", // Asumsi ada field 'category' atau default
-          row: item.attributes.row || 1, // Asumsi ada field 'row' atau default ke 1
+          category: item.category || "Umum", // Akses langsung dari item atau default
+          row: item.row || 1, // Akses langsung dari item atau default
         }))
 
         setCoursesData(fetchedCourses)
+        console.log("Fetched courses data:", fetchedCourses); // Log data yang berhasil diambil
       } catch (err: any) {
         console.error("Error fetching courses:", err)
         setError(err.message || "Terjadi kesalahan saat mengambil data kursus.")
         setCoursesData([]) // Pastikan data kosong jika ada error
       } finally {
         setIsLoading(false)
+        console.log("Loading finished. Is loading:", false); // Log status loading
       }
     }
 
     fetchCourses()
   }, [])
+
+  console.log("Current coursesData state:", coursesData); // Log state saat ini
+  console.log("Current isLoading state:", isLoading); // Log state saat ini
+  console.log("Current error state:", error); // Log state saat ini
 
   if (isLoading) {
     return (

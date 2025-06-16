@@ -18,16 +18,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {  const pathname = usePathname()
   const isAuthPage = pathname === "/login" || pathname === "/register"
-  const isRestrictedPage = ["/login", "/register", "/"].includes(pathname)
+  // Hapus isRestrictedPage dan logika pengalihan terkait
+  // const isRestrictedPage = ["/login", "/register", "/"].includes(pathname)
 
-  useEffect(() => {
-    if (isRestrictedPage) {
-      const token = localStorage.getItem("token")
-      if (token) {
-        window.location.href = "/courses" // Redirect authenticated users to courses page
-      }
-    }
-  }, [isRestrictedPage])
+  // Hapus useEffect yang mengarahkan ke /courses
+  // useEffect(() => {
+  //   if (isRestrictedPage) {
+  //     const token = localStorage.getItem("token")
+  //     if (token) {
+  //       window.location.href = "/courses" // Redirect authenticated users to courses page
+  //     }
+  //   }
+  // }, [isRestrictedPage])
 
   return (
     <html lang="en">

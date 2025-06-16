@@ -69,10 +69,10 @@ const Navbar = () => {
     }
   }, [lastScrollY])
   const navLinks: NavLink[] = [
-    { path: "/", label: "Home" },
+    { path: "/landing-page", label: "Home" }, // Mengarahkan Home ke /landing-page
     { path: "/about", label: "About Us" },
     { path: "/consultation", label: "Consultation" },
-    { path: "/our-course", label: "Our Course" },
+    { path: "/courses", label: "Our Course" }, // Mengarahkan Our Course ke /courses
   ]
 
   return (
@@ -82,7 +82,7 @@ const Navbar = () => {
       <div className="container px-4 mx-auto">
         <div className="flex items-center justify-between h-16">          {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img src="/logo-horizon-1.png" alt="Logo" className="h-8" />
+            <img src="/img/horizon-logo-green.png" alt="Logo" className="h-auto w-22 sm:w-24 md:w-28 lg:w-32" />
           </Link>
 
           {/* Navigation Links - Hidden on Mobile */}
@@ -314,4 +314,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-

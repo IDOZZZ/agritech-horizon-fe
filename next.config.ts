@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
         hostname: 'placehold.co',
         pathname: '**',
       },
+      {
+        protocol: 'http', // Gunakan http karena Strapi berjalan di http
+        hostname: 'localhost',
+        port: '1337', // Tambahkan port Strapi
+        pathname: '/uploads/**', // Sesuaikan dengan path upload Strapi Anda
+      },
     ],
     dangerouslyAllowSVG: true,
   },
