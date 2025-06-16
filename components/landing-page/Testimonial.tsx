@@ -60,7 +60,6 @@ const Testimonial : React.FC = () => {
   return (
     <div className="self-stretch p-20 bg-[#F5FCF7] flex-col justify-start items-start gap-10 flex">
         <div className="w-2/3 text-black text-6xl font-semibold font-heading">Lihat apa yang pelanggan kami katakan</div>
-
         <div className="embla testimonial-section w-full max-w-full m-auto">
           <div className="embla__viewport flex flex-col justify-end h-full overflow-hidden" ref={emblaRef}>
             <div className="embla__container flex h-auto">

@@ -44,7 +44,6 @@ const Footer = () => {
                     <div className="mb-8">
                         <input type="text" id="name" name="name" className="w-full appearance-none bg-transparent border-0 border-b border-gray-300 text-gray-900 pt-2 focus:outline-none focus:ring-0 focus:border-black" placeholder='Nama'/>
                     </div>
-
                     <div className="mb-10">
                         <input type="email" id="email" name="email" className="w-full appearance-none bg-transparent border-0 border-b border-gray-300 text-gray-900 pt-2 focus:outline-none focus:ring-0 focus:border-black" placeholder='Email'/>
                     </div>

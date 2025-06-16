@@ -10,7 +10,7 @@ import Footer from '../../components/landing-page/Footer';
 
 const LandingPage = () => {
   return (
-    <div className="w-full h-full flex-col justify-start items-start inline-flex">
+    <div className="inline-flex flex-col items-start justify-start w-full h-full">
       <Hero />
       <SocialProof />
       <Vp />
@@ -18,7 +18,7 @@ const LandingPage = () => {
       <ClassList />
       <Testimonial />
       <FinalCta />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
