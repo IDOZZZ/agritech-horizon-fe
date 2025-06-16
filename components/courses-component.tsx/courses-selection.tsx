@@ -1,108 +1,93 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import CourseCard from "@/components/ui/course-card"
 import SectionHeader from "@/components/ui/section-header"
+import { httpRequest } from "@/lib/http" // Import httpRequest
 
-// Data untuk semua kelas
-const courses = [
-  // Baris 1
-  {    id: 1,
-    title: "Belajar Pembibitan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Pembibitan",
-    row: 1,
-  },
-  {
-    id: 2,
-    title: "Media Tanam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Media Tanam",
-    row: 1,
-  },
-  {    id: 3,
-    title: "Media Hidroponik",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Hidroponik",
-    row: 1,
-  },
-  {
-    id: 4,
-    title: "Belajar Pembibitan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Pembibitan",
-    row: 1,
-  },
-  {    id: 9,
-    title: "Media Tanam Lanjutan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Media Tanam",
-    row: 1,
-  },
-  {
-    id: 10,
-    title: "Teknik Hidroponik",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Hidroponik",
-    row: 1,
-  },
-  // Baris 2
-  {    id: 5,
-    title: "Belajar Pembibitan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Pembibitan",
-    row: 2,
-  },
-  {
-    id: 6,
-    title: "Media Tanam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Media Tanam",
-    row: 2,
-  },
-  {    id: 7,
-    title: "Media Hidroponik",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Hidroponik",
-    row: 2,
-  },
-  {
-    id: 8,
-    title: "Belajar Pembibitan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Pembibitan",
-    row: 2,
-  },
-  {
-    id: 11,
-    title: "Pertanian Organik",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Organik",
-    row: 2,
-  },
-  {
-    id: 12,
-    title: "Teknik Panen",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit id venenatis pretium risus",
-    image: "/farming.jpg",
-    category: "Panen",
-    row: 2,
-  },
-]
-
+interface Course {
+  id: number
+  title: string
+  description: string
+  image: string // URL gambar dari Strapi
+  category: string
+  row: number // Untuk pengelompokan baris
+}
 
 export default function CourseSelection() {
+  const [coursesData, setCoursesData] = useState<Course[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        // Asumsi endpoint untuk mendapatkan modul/materi gambar adalah /api/courses
+        // Anda mungkin perlu menyesuaikan endpoint ini sesuai dengan backend Strapi Anda
+        const response = await httpRequest("/api/modules?populate=thumbnail", {
+          method: "GET",
+        })
+
+        if (response.error) {
+          setError(response.message || "Gagal mengambil data kursus.")
+          setCoursesData([]) // Pastikan data kosong jika ada error
+          return
+        }
+
+        // Asumsi struktur data Strapi: respons dibungkus dalam objek 'data',
+        // dan array sebenarnya ada di 'response.data.data'.
+        // Setiap item memiliki 'attributes' dan di dalamnya ada 'title', 'description', 'thumbnail'.
+        const modules = response.data && Array.isArray(response.data.data) ? response.data.data : [];
+
+        const fetchedCourses: Course[] = modules.map((item: any) => ({
+          id: item.id,
+          title: item.attributes.title,
+          description: item.attributes.description,
+          // Pastikan URL gambar lengkap, tambahkan BASE_URL jika perlu
+          image: item.attributes.thumbnail?.data?.attributes?.url
+            ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.attributes.thumbnail.data.attributes.url}`
+            : "/farming.jpg", // Fallback image jika tidak ada thumbnail dari Strapi
+          category: item.attributes.category || "Umum", // Asumsi ada field 'category' atau default
+          row: item.attributes.row || 1, // Asumsi ada field 'row' atau default ke 1
+        }))
+
+        setCoursesData(fetchedCourses)
+      } catch (err: any) {
+        console.error("Error fetching courses:", err)
+        setError(err.message || "Terjadi kesalahan saat mengambil data kursus.")
+        setCoursesData([]) // Pastikan data kosong jika ada error
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchCourses()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container px-4 mx-auto mb-12 text-center">
+          <p>Memuat kursus...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container px-4 mx-auto mb-12 text-center">
+          <p className="text-red-500">Error: {error}</p>
+          <p>Gagal memuat kursus. Silakan coba lagi nanti.</p>
+        </div>
+      </section>
+    )
+  }
+
   // Filter courses by row
-  const row1Courses = courses.filter((course) => course.row === 1)
-  const row2Courses = courses.filter((course) => course.row === 2)
+  const row1Courses = coursesData.filter((course) => course.row === 1)
+  const row2Courses = coursesData.filter((course) => course.row === 2)
 
   return (
     <section className="py-16 bg-white">

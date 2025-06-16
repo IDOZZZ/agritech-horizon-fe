@@ -10,6 +10,10 @@ export async function httpRequest(endpoint: string, options: RequestInit) {
       headers: {
         "Content-Type": "application/json",
         ...(options.headers || {}),
+        // Tambahkan header Authorization jika token tersedia
+        ...(typeof window !== 'undefined' && localStorage.getItem('token')
+          ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          : {}),
       },
     });
 

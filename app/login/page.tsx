@@ -8,10 +8,10 @@ export default function AuthLayout() {
   const [authMode, setAuthMode] = useState<"login" | "register">("register")
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      window.location.href = "/courses"
-    }
+    // Hapus token dari localStorage dan cookie saat halaman login diakses
+    // Ini untuk mencegah pengalihan yang tidak diinginkan jika ada token yang tersisa
+    localStorage.removeItem("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   }, [])
 
   return (
