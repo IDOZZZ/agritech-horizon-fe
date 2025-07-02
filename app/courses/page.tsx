@@ -3,7 +3,6 @@
 import React from "react";
 import HeroSection from "@/components/courses-component.tsx/hero";
 import CourseSelection from "@/components/courses-component.tsx/courses-selection";
-import Navbar from "@/components/ui/navbar";
 
 const CoursesPage = () => {
   return (

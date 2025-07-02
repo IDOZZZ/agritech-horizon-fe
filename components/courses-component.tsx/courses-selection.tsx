@@ -37,7 +37,22 @@ export default function CourseSelection() {
         // Assuming Strapi response for /api/modules is an array of modules
         const modules = response.data && Array.isArray(response.data) ? response.data : [];
 
-        const fetchedCourses: Course[] = modules.map((item: any) => ({
+        const fetchedCourses: Course[] = modules.map((item: {
+          id: number;
+          documentId: string;
+          title: string;
+          description: string;
+          thumbnail: {
+            formats: {
+              large: {
+                url: string;
+              };
+            };
+            url: string;
+          };
+          category: string;
+          row: number;
+        }) => ({
           id: item.id,
           documentId: item.documentId, // Directly access documentId from item
           title: item.title, // Directly access title from item

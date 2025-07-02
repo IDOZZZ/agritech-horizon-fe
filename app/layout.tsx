@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css"
 import Navbar from "@/components/ui/navbar"
 import Footer from "@/components/ui/footer"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
 
 const manrope = Manrope({ subsets: ["latin"] })
 

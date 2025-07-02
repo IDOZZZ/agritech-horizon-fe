@@ -6,7 +6,6 @@ import Consultation from '../../components/landing-page/Consultation';
 import ClassList from '../../components/landing-page/ClassList';
 import Testimonial from '../../components/landing-page/Testimonial';
 import FinalCta from '../../components/landing-page/FinalCta';
-import Footer from '../../components/landing-page/Footer';
 
 const LandingPage = () => {
   return (

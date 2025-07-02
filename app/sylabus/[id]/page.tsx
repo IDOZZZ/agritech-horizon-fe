@@ -65,9 +65,9 @@ export default function SylabusDetailPage() {
           setModuleData(null);
         }
 
-      } catch (err: any) {
+      } catch (err: Error | any) {
         console.error("Error fetching module data:", err);
-        setError(err.message || "Terjadi kesalahan saat mengambil data modul.");
+        setError((err as Error).message || "Terjadi kesalahan saat mengambil data modul.");
         setModuleData(null);
       } finally {
         setIsLoading(false);
