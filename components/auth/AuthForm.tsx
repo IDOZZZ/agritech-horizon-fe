@@ -118,7 +118,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
       // Display success message in UI instead of toast
       setErrorMessage(isLogin ? "Login berhasil!" : "Registrasi berhasil!");
       setTimeout(() => {
-        window.location.href = isLogin ? "/courses" : "/login"; // Redirect to courses or login page based on mode
+        window.location.href = isLogin ? "/landing-page" : "/login"; // Redirect to courses or login page based on mode
       }, 2000);    } catch (error) {
       console.error("Error caught in handleSubmit:", error);
       setErrorMessage(error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui, silakan coba lagi nanti.");

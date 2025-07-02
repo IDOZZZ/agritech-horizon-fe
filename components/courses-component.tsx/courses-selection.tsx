@@ -6,68 +6,65 @@ import SectionHeader from "@/components/ui/section-header"
 import { httpRequest } from "@/lib/http" // Import httpRequest
 
 interface Course {
-  id: number
-  title: string
-  description: string
-  image: string // URL gambar dari Strapi
-  category: string
-  row: number // Untuk pengelompokan baris
+  id: number; // Keep original ID for key, but use documentId for routing
+  documentId: string; // Add documentId for routing
+  title: string;
+  description: string;
+  image: string; // URL gambar dari Strapi
+  category: string;
+  row: number; // Untuk pengelompokan baris
 }
 
 export default function CourseSelection() {
-  const [coursesData, setCoursesData] = useState<Course[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [coursesData, setCoursesData] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        // Asumsi endpoint untuk mendapatkan modul/materi gambar adalah /api/courses
-        // Anda mungkin perlu menyesuaikan endpoint ini sesuai dengan backend Strapi Anda
+        // Revert to using /api/modules endpoint as it's intended for public course listing
         const response = await httpRequest("/api/modules?populate=thumbnail", {
           method: "GET",
-        })
+        });
 
         if (response.error) {
-          setError(response.message || "Gagal mengambil data kursus.")
-          setCoursesData([]) // Pastikan data kosong jika ada error
-          return
+          setError(response.message || "Gagal mengambil data kursus.");
+          setCoursesData([]);
+          return;
         }
 
-        // Asumsi struktur data Strapi: respons dibungkus dalam objek 'data',
-        // dan array sebenarnya ada di 'response.data.data'.
-        // Setiap item memiliki 'attributes' dan di dalamnya ada 'title', 'description', 'thumbnail'.
-        console.log("Response from Strapi:", response.data); // Log response untuk debugging
+        // Assuming Strapi response for /api/modules is an array of modules
         const modules = response.data && Array.isArray(response.data) ? response.data : [];
 
         const fetchedCourses: Course[] = modules.map((item: any) => ({
           id: item.id,
-          title: item.title, // Akses langsung dari item
-          description: item.description, // Akses langsung dari item
-          // Pastikan URL gambar lengkap, ambil dari formats.large.url atau langsung url
+          documentId: item.documentId, // Directly access documentId from item
+          title: item.title, // Directly access title from item
+          description: item.description, // Directly access description from item
           image: item.thumbnail?.formats?.large?.url
             ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.thumbnail.formats.large.url}`
             : item.thumbnail?.url
             ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${item.thumbnail.url}`
-            : "/farming.jpg", // Fallback image jika tidak ada thumbnail dari Strapi
-          category: item.category || "Umum", // Akses langsung dari item atau default
-          row: item.row || 1, // Akses langsung dari item atau default
-        }))
+            : "/farming.jpg", // Fallback image
+          category: item.category || "Umum", // Directly access category from item
+          row: item.row || 1, // Directly access row from item
+        }));
 
-        setCoursesData(fetchedCourses)
-        console.log("Fetched courses data:", fetchedCourses); // Log data yang berhasil diambil
+        setCoursesData(fetchedCourses);
+        console.log("Fetched courses data:", fetchedCourses);
       } catch (err: any) {
-        console.error("Error fetching courses:", err)
-        setError(err.message || "Terjadi kesalahan saat mengambil data kursus.")
-        setCoursesData([]) // Pastikan data kosong jika ada error
+        console.error("Error fetching courses:", err);
+        setError(err.message || "Terjadi kesalahan saat mengambil data kursus.");
+        setCoursesData([]);
       } finally {
-        setIsLoading(false)
-        console.log("Loading finished. Is loading:", false); // Log status loading
+        setIsLoading(false);
+        console.log("Loading finished. Is loading:", false);
       }
-    }
+    };
 
-    fetchCourses()
-  }, [])
+    fetchCourses();
+  }, []);
 
   console.log("Current coursesData state:", coursesData); // Log state saat ini
   console.log("Current isLoading state:", isLoading); // Log state saat ini
@@ -112,6 +109,8 @@ export default function CourseSelection() {
               {row1Courses.map((course) => (
                 <div key={course.id} className="w-[270px] flex-shrink-0">
                   <CourseCard
+                    id={course.id} // Teruskan ID modul
+                    documentId={course.documentId} // Teruskan documentId
                     title={course.title}
                     description={course.description}
                     image={course.image}
@@ -126,6 +125,8 @@ export default function CourseSelection() {
               {row2Courses.map((course) => (
                 <div key={course.id} className="w-[270px] flex-shrink-0">
                   <CourseCard
+                    id={course.id} // Teruskan ID modul
+                    documentId={course.documentId} // Teruskan documentId
                     title={course.title}
                     description={course.description}
                     image={course.image}

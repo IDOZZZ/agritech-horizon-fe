@@ -1,14 +1,36 @@
+"use client" // Tambahkan use client karena menggunakan useState dan useRouter
+
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation" // Import useRouter
+import { useState, useEffect } from "react" // Import useState dan useEffect
 
 interface CourseCardProps {
-  title: string
-  description: string
-  image: string
-  category: string
+  id: number; // Keep original ID for key
+  documentId: string; // Add documentId for routing
+  title: string;
+  description: string;
+  image: string;
+  category: string;
 }
 
-export default function CourseCard({ title, description, image, category }: CourseCardProps) {
+export default function CourseCard({ id, documentId, title, description, image, category }: CourseCardProps) {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleBelajarSekarangClick = () => {
+    if (isAuthenticated) {
+router.push(`/sylabus/${id}`); // Arahkan ke halaman silabus detail dengan id
+    } else {
+      router.push("/login"); // Arahkan ke halaman login jika belum login
+    }
+  };
+
   return (
     <div className="relative h-[400px] rounded-lg overflow-hidden group">
       {/* Background Image */}
@@ -23,12 +45,12 @@ export default function CourseCard({ title, description, image, category }: Cour
 
           {/* Button Container */}
           <div className="flex items-center">
-            <Link
-              href="#"
+            <button // Ubah Link menjadi button
+              onClick={handleBelajarSekarangClick}
               className="w-full px-4 py-2 text-sm font-medium text-center text-white transition-colors rounded bg-[var(--color-brand)] hover:bg-[var(--color-brand)]/90"
             >
               Belajar Sekarang
-            </Link>
+            </button>
           </div>
         </div>
       </div>
