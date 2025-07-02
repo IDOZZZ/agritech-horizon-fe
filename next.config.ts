@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
-
-
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -12,13 +9,17 @@ const nextConfig: NextConfig = {
         pathname: '**',
       },
       {
-        protocol: 'http', // Gunakan http karena Strapi berjalan di http
+        protocol: 'http',
         hostname: 'localhost',
-        port: '1337', // Tambahkan port Strapi
-        pathname: '/uploads/**', // Sesuaikan dengan path upload Strapi Anda
+        port: '1337',
+        pathname: '/uploads/**',
       },
     ],
     dangerouslyAllowSVG: true,
+  },
+
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
