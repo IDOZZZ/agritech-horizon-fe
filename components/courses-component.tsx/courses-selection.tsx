@@ -15,6 +15,23 @@ interface Course {
   row: number; // Untuk pengelompokan baris
 }
 
+interface Module {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  thumbnail?: {
+    formats?: {
+      large?: {
+        url: string;
+      };
+    };
+    url?: string;
+  };
+  category: string;
+  row: number;
+}
+
 export default function CourseSelection() {
   const [coursesData, setCoursesData] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,22 +54,7 @@ export default function CourseSelection() {
         // Assuming Strapi response for /api/modules is an array of modules
         const modules = response.data && Array.isArray(response.data) ? response.data : [];
 
-        const fetchedCourses: Course[] = modules.map((item: {
-          id: number;
-          documentId: string;
-          title: string;
-          description: string;
-          thumbnail: {
-            formats: {
-              large: {
-                url: string;
-              };
-            };
-            url: string;
-          };
-          category: string;
-          row: number;
-        }) => ({
+        const fetchedCourses: Course[] = modules.map((item: Module) => ({
           id: item.id,
           documentId: item.documentId, // Directly access documentId from item
           title: item.title, // Directly access title from item
@@ -125,11 +127,9 @@ export default function CourseSelection() {
                 <div key={course.id} className="w-[270px] flex-shrink-0">
                   <CourseCard
                     id={course.id} // Teruskan ID modul
-                    documentId={course.documentId} // Teruskan documentId
                     title={course.title}
                     description={course.description}
                     image={course.image}
-                    category={course.category}
                   />
                 </div>
               ))}
@@ -141,11 +141,9 @@ export default function CourseSelection() {
                 <div key={course.id} className="w-[270px] flex-shrink-0">
                   <CourseCard
                     id={course.id} // Teruskan ID modul
-                    documentId={course.documentId} // Teruskan documentId
                     title={course.title}
                     description={course.description}
                     image={course.image}
-                    category={course.category}
                   />
                 </div>
               ))}

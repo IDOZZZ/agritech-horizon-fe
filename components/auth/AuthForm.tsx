@@ -126,14 +126,10 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
     }
   }
 
-  const handleSocialAuth = (provider: string) => {
-    console.log(`${isLogin ? "Login" : "Register"} with ${provider}`)
-    // Implement social auth logic
-  }
-
-  return (    <div className="flex flex-col justify-center p-4 bg-white sm:p-8 lg:p-12">
+  return (
+    <div className="flex flex-col justify-center p-4 bg-white sm:p-8 lg:p-12">
       <div className="w-full max-w-sm mx-auto">
-        <!-- Header -->
+        {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">{!isLogin ? "Mulai Sekarang" : "Selamat Datang Kembali"}</h2>
           <p className="text-gray-600">
@@ -147,7 +143,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
           </p>
         </div>
 
-        <!-- Form -->
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div>
@@ -233,7 +229,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
             disabled={isLoading}
           >
             {isLoading ? "Mohon tunggu..." : isLogin ? "Masuk" : "Buat Akun"}</Button>
-        </form>        <!-- Error and Success Messages -->
+        </form>        {/* Error and Success Messages */}
         {errorMessage && (
           <div className={`mt-4 p-3 text-sm rounded-sm ${
             errorMessage === "Login berhasil!" || errorMessage === "Registrasi berhasil!"

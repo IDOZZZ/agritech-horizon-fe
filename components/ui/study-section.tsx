@@ -1,4 +1,3 @@
-import Link from "next/link"
 
 interface StudySectionProps {
   number: number

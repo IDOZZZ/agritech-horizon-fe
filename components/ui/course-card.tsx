@@ -1,20 +1,17 @@
 "use client" // Tambahkan use client karena menggunakan useState dan useRouter
 
 import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/navigation" // Import useRouter
 import { useState, useEffect } from "react" // Import useState dan useEffect
 
 interface CourseCardProps {
   id: number; // Keep original ID for key
-  documentId: string; // Add documentId for routing
   title: string;
   description: string;
   image: string;
-  category: string;
 }
 
-export default function CourseCard({ id, documentId, title, description, image, category }: CourseCardProps) {
+export default function CourseCard({ id, title, description, image }: CourseCardProps) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
