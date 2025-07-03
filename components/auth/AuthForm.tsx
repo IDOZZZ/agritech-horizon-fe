@@ -126,6 +126,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
     }
   }
 
+
   // const handleSocialAuth = (provider: string) => {
   //   console.log(`${isLogin ? "Login" : "Register"} with ${provider}`)
   //   // Implement social auth logic
@@ -149,6 +150,7 @@ export default function AuthForm({ mode = "register", onModeChange }: AuthFormPr
           </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div>

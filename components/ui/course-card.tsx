@@ -7,11 +7,9 @@ import { useState, useEffect } from "react" // Import useState dan useEffect
 
 interface CourseCardProps {
   id: number; // Keep original ID for key
-  documentId: string; // Add documentId for routing
   title: string;
   description: string;
   image: string;
-  category: string;
 }
 
 // documentId,, category

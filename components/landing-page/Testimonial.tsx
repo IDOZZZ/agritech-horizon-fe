@@ -5,7 +5,15 @@ import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
-const testimonials = [
+interface TestimonialData {
+    name: string;
+    location: string;
+    rating: string;
+    text: string;
+    image: string;
+}
+
+const testimonials: TestimonialData[] = [
     {
         name: "Ahmad Ramadhan",
         location: "Magelang, Jawa Tengah",
@@ -80,7 +88,7 @@ const Testimonial = () => {
 
             <div className="embla" ref={emblaRef}>
                 <div className="embla__container">
-                    {testimonials.map((testimonial, index) => (
+                    {testimonials.map((testimonial: TestimonialData, index) => (
                         <div className={`embla__slide ${index === selectedIndex ? 'embla__slide--centered' : ''}`} key={index}>
                             <div className="testimonial-item">
                                 <div className="w-[413px] h-[418px] flex-col justify-end items-start flex">
