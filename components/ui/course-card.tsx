@@ -10,10 +10,11 @@ interface CourseCardProps {
   title: string
   description: string
   image: string
-  slug: string // Tambahkan slug untuk navigasi
+  slug: string
+  documentId: string // Tambahkan documentId
 }
 
-export default function CourseCard({ id, title, description, image, slug }: CourseCardProps) {
+export default function CourseCard({ id, title, description, image, slug, documentId }: CourseCardProps) {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -24,8 +25,8 @@ export default function CourseCard({ id, title, description, image, slug }: Cour
 
   const handleBelajarSekarangClick = () => {
     if (isAuthenticated) {
-      // Arahkan ke halaman silabus dengan query parameter category
-      router.push(`/sylabus?category=${slug}`)
+      // Arahkan ke halaman silabus dinamis dengan documentId
+      router.push(`/sylabus/${documentId}`)
     } else {
       router.push("/login") // Arahkan ke halaman login jika belum login
     }

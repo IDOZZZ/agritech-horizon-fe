@@ -10,6 +10,7 @@ interface Category {
   name: string
   slug: string
   description: string
+  documentId: string
 }
 
 export default function CourseSelection() {
@@ -37,6 +38,7 @@ export default function CourseSelection() {
           name: item.name,
           slug: item.slug,
           description: item.description,
+          documentId: item.documentId,
         }))
 
         setCategoriesData(fetchedCategories)
@@ -89,6 +91,7 @@ export default function CourseSelection() {
                   description={category.description}
                   image="/farming.jpg" // Placeholder image
                   slug={category.slug}
+                  documentId={category.documentId}
                 />
               </div>
             ))}

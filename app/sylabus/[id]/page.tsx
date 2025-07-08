@@ -1,129 +1,155 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
-import { httpRequest } from '@/lib/http'; // Import httpRequest
+import React, { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import Image from "next/image"
+import { httpRequest } from "@/lib/http"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { StudySection } from "@/components/ui/study-section" // Import StudySection
 
-interface ModuleData {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  slug: string;
+// --- Interfaces for API data ---
+interface Material {
+  id: number
+  documentId: string
+  title: string
+  order: number
 }
 
-export default function SylabusDetailPage() {
-  const params = useParams();
-  const moduleId = params.id;
+interface Module {
+  id: number
+  documentId: string
+  title:string
+  description: string
+  materials: Material[]
+}
 
-  const [moduleData, setModuleData] = useState<ModuleData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface Category {
+  id: number
+  documentId: string
+  name: string
+  description: string
+  modules: Module[]
+}
+
+// --- Main Component ---
+export default function SyllabusDetailPage() {
+  const params = useParams()
+  const categoryId = params.id
+
+  const [categoryData, setCategoryData] = useState<Category | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchModuleData = async () => {
-      if (!moduleId) {
-        setIsLoading(false);
-        setError("ID Modul tidak ditemukan.");
-        return;
-      }
+    console.log("Received categoryId from params:", categoryId); // Debugging line
+    if (!categoryId) {
+      setIsLoading(false)
+      setError("ID Kategori tidak ditemukan.")
+      return
+    }
 
-      setIsLoading(true);
-      setError(null);
+    const fetchCategoryData = async () => {
+      setIsLoading(true)
+      setError(null)
       try {
-        const token = localStorage.getItem("token"); // Get token from localStorage
-        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-
-        // Fetch the module by filtering the list endpoint by ID (simplifying to debug 400 error)
-        const response = await httpRequest(`/api/modules?filters[id][$eq]=${moduleId}`, {
+        const response = await httpRequest(
+          `/api/categories?filters[documentId][$eq]=${categoryId}&populate[modules][populate]=materials`,
+          {
             method: "GET",
-            headers: headers,
-        });
+          }
+        )
 
         if (response.error) {
-            setError(response.message || "Gagal mengambil data modul.");
-            setModuleData(null);
-            return;
+          setError(response.message || "Gagal mengambil data kategori.")
+          return
         }
 
-        // The response will be an array of modules, we need the first one
-        const moduleList = response.data;
-        const moduleData = moduleList && Array.isArray(moduleList) && moduleList.length > 0 ? moduleList[0] : null;
-
-        if (moduleData) {
-            // Data from a list endpoint does not have the .attributes wrapper
-            const thumbnailUrl = moduleData.thumbnail?.data?.attributes?.formats?.large?.url || moduleData.thumbnail?.data?.attributes?.url;
-
-            setModuleData({
-                id: moduleData.id.toString(),
-                title: moduleData.title,
-                description: moduleData.description,
-                slug: moduleData.slug,
-                image: thumbnailUrl
-                    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${thumbnailUrl}`
-                    : "/farming.jpg", // Fallback image
-            });
+        const data = response.data && Array.isArray(response.data) ? response.data[0] : null
+        if (data) {
+          data.modules.forEach((module: Module) => {
+            module.materials.sort((a, b) => a.order - b.order)
+          })
+          setCategoryData(data)
         } else {
-            setError("Data modul tidak ditemukan atau tidak valid.");
-            setModuleData(null);
+          setError("Data kategori tidak ditemukan.")
         }
-
-      } catch (err: Error | any) {
-        console.error("Error fetching module data:", err);
-        setError((err as Error).message || "Terjadi kesalahan saat mengambil data modul.");
-        setModuleData(null);
+      } catch (err: any) {
+        setError(err.message || "Terjadi kesalahan saat mengambil data.")
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchModuleData();
-  }, [moduleId]);
+    fetchCategoryData()
+  }, [categoryId])
 
+  // --- Render Logic ---
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Memuat silabus...</p>
-      </div>
-    );
+      <div className="flex items-center justify-center min-h-screen"><p>Memuat silabus...</p></div>
+    )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Error: {error}</p>
-        <p>Gagal memuat silabus. Silakan coba lagi nanti.</p>
-      </div>
-    );
+      <div className="flex items-center justify-center min-h-screen"><p className="text-red-500">Error: {error}</p></div>
+    )
   }
 
-  if (!moduleData) {
+  if (!categoryData) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Silabus tidak ditemukan.</p>
-      </div>
-    );
+      <div className="flex items-center justify-center min-h-screen"><p>Silabus tidak ditemukan.</p></div>
+    )
   }
 
+  // --- JSX ---
   return (
-    <div className="container min-h-screen p-8 mx-auto">
-      <div className="rounded-lg shadow-md overflow-hidden bg-white mb-8">
-        <div className="relative w-full h-64">
-          <Image
-            src={moduleData.image}
-            alt={moduleData.title}
-            layout="fill"
-            objectFit="cover"
-            className="rounded-t-lg"
-          />
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl px-6 py-8 mx-auto">
+        {/* Header Image and Introduction */}
+        <div className="mb-8">
+          <div className="mb-6">
+            <Image
+              src={"/farming.jpg"} // Placeholder image
+              alt={categoryData.name}
+              width={800}
+              height={300}
+              className="w-full h-[300px] object-cover rounded-lg"
+            />
+          </div>
+          <h1 className="mb-4 text-3xl font-bold text-gray-800">{categoryData.name}</h1>
+          <p className="mb-6 text-base leading-relaxed text-[#000000]">{categoryData.description}</p>
+          <Button className="px-6 py-2 text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">Mulai Belajar</Button>
         </div>
-        <div className="p-6">
-          <h1 className="mb-2 text-3xl font-bold text-gray-800">{moduleData.title}</h1>
-          <p className="mb-4 text-base leading-relaxed text-[#000000]">{moduleData.description}</p>
+
+        {/* Study Sections from Dynamic Data */}
+        <div className="space-y-0">
+          {categoryData.modules.map((module, index) => (
+            <StudySection
+              key={module.id}
+              number={index + 1}
+              title={module.title}
+              description={module.description}
+              categories={module.materials.map(material => ({
+                id: material.documentId,
+                title: material.title,
+              }))}
+            />
+          ))}
+        </div>
+
+        {/* Call to Action Section */}
+        <div className="py-8 mt-12">
+          <h2 className="mb-4 text-3xl font-bold text-gray-800">Tingkatkan Kemampuanmu Bersama Kami</h2>
+          <p className="max-w-2xl mb-6 text-base leading-relaxed text-[#000000]">
+            Siap untuk mendalami pengetahuan Anda? Bergabunglah dengan kursus kami dan jadilah ahli di bidang pertanian modern.
+          </p>
+          <Button className="px-6 py-2 font-semibold text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">
+            Daftar Sekarang
+          </Button>
         </div>
       </div>
-      {/* Di sini Anda bisa menambahkan lebih banyak detail silabus */}
     </div>
-  );
+  )
 }

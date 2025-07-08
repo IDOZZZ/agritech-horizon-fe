@@ -1,3 +1,5 @@
+import Link from "next/link"
+import { Button } from "./button"
 
 interface StudySectionProps {
   number: number
@@ -18,13 +20,20 @@ export function StudySection({ number, title, description, categories }: StudySe
       <p className="mb-6 text-sm leading-relaxed text-[#000000]">{description}</p>
       <div className="space-y-3">
         {categories.map((category, index) => (
-          <div key={category.id} className="flex items-center">
-            <span className="text-gray-800 font-medium mr-2 min-w-[2.5rem] border border-gray-300 rounded px-2 py-1 flex items-center justify-center text-center">
-              {number}.{index + 1}
-            </span>
-            <span className="text-sm font-medium text-[#0D0D12]">
-              {category.title}
-            </span>
+          <div key={category.id} className="flex items-center justify-between p-3 bg-gray-100 rounded-md">
+            <div className="flex items-center">
+              <span className="text-gray-800 font-medium mr-2 min-w-[2.5rem] border border-gray-300 rounded px-2 py-1 flex items-center justify-center text-center">
+                {number}.{index + 1}
+              </span>
+              <span className="text-sm font-medium text-[#0D0D12]">
+                {category.title}
+              </span>
+            </div>
+            <Link href={`/materials/${category.id}`} passHref>
+              <Button size="sm" variant="outline">
+                Lihat Materi
+              </Button>
+            </Link>
           </div>
         ))}
       </div>
