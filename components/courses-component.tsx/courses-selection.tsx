@@ -11,6 +11,9 @@ interface Category {
   slug: string
   description: string
   documentId: string
+  thumbnail?: {
+    url: string
+  }
 }
 
 export default function CourseSelection() {
@@ -21,7 +24,7 @@ export default function CourseSelection() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await httpRequest("/api/categories", {
+        const response = await httpRequest("/api/categories?populate=thumbnail", {
           method: "GET",
         })
 
@@ -39,6 +42,7 @@ export default function CourseSelection() {
           slug: item.slug,
           description: item.description,
           documentId: item.documentId,
+          thumbnail: item.thumbnail,
         }))
 
         setCategoriesData(fetchedCategories)
@@ -89,7 +93,7 @@ export default function CourseSelection() {
                   id={category.id}
                   title={category.name}
                   description={category.description}
-                  image="/farming.jpg" // Placeholder image
+                  image={category.thumbnail ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${category.thumbnail.url}` : "/farming.jpg"}
                   slug={category.slug}
                   documentId={category.documentId}
                 />

@@ -30,19 +30,21 @@ interface Category {
   name: string
   description: string
   modules: Module[]
+  thumbnail?: {
+    url: string
+  }
 }
 
 // --- Main Component ---
 export default function SyllabusDetailPage() {
   const params = useParams()
-  const categoryId = params.id
+  const categoryId = Array.isArray(params.id) ? params.id[0] : params.id
 
   const [categoryData, setCategoryData] = useState<Category | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log("Received categoryId from params:", categoryId); // Debugging line
     if (!categoryId) {
       setIsLoading(false)
       setError("ID Kategori tidak ditemukan.")
@@ -54,7 +56,7 @@ export default function SyllabusDetailPage() {
       setError(null)
       try {
         const response = await httpRequest(
-          `/api/categories?filters[documentId][$eq]=${categoryId}&populate[modules][populate]=materials`,
+          `/api/categories?filters[documentId][$eq]=${categoryId}&populate[modules][populate]=materials&populate=thumbnail`,
           {
             method: "GET",
           }
@@ -111,7 +113,7 @@ export default function SyllabusDetailPage() {
         <div className="mb-8">
           <div className="mb-6">
             <Image
-              src={"/farming.jpg"} // Placeholder image
+              src={categoryData.thumbnail ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${categoryData.thumbnail.url}` : "/farming.jpg"}
               alt={categoryData.name}
               width={800}
               height={300}
