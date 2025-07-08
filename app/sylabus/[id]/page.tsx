@@ -10,6 +10,7 @@ interface ModuleData {
   title: string;
   description: string;
   image: string;
+  slug: string;
 }
 
 export default function SylabusDetailPage() {
@@ -34,35 +35,38 @@ export default function SylabusDetailPage() {
         const token = localStorage.getItem("token"); // Get token from localStorage
         const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
-        const response = await httpRequest(`/api/materials?filters[module][id][$eq]=${moduleId}&populate=module.thumbnail`, {
-          method: "GET",
-          headers: headers, // Add headers to the request
+        // Fetch the module by filtering the list endpoint by ID (simplifying to debug 400 error)
+        const response = await httpRequest(`/api/modules?filters[id][$eq]=${moduleId}`, {
+            method: "GET",
+            headers: headers,
         });
 
         if (response.error) {
-          setError(response.message || "Gagal mengambil data modul.");
-          setModuleData(null);
-          return;
+            setError(response.message || "Gagal mengambil data modul.");
+            setModuleData(null);
+            return;
         }
 
-        // Assuming the response for materials is an array, and we want the first one
-        const material = response.data && Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
+        // The response will be an array of modules, we need the first one
+        const moduleList = response.data;
+        const moduleData = moduleList && Array.isArray(moduleList) && moduleList.length > 0 ? moduleList[0] : null;
 
-        if (material && material.attributes && material.attributes.module && material.attributes.module.data && material.attributes.module.data.attributes) {
-          const moduleAttributes = material.attributes.module.data.attributes;
-          setModuleData({
-            id: moduleId as string,
-            title: moduleAttributes.title,
-            description: moduleAttributes.description,
-            image: moduleAttributes.thumbnail?.formats?.large?.url
-              ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${moduleAttributes.thumbnail.formats.large.url}`
-              : moduleAttributes.thumbnail?.url
-              ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${moduleAttributes.thumbnail.url}`
-              : "/farming.jpg",
-          });
+        if (moduleData) {
+            // Data from a list endpoint does not have the .attributes wrapper
+            const thumbnailUrl = moduleData.thumbnail?.data?.attributes?.formats?.large?.url || moduleData.thumbnail?.data?.attributes?.url;
+
+            setModuleData({
+                id: moduleData.id.toString(),
+                title: moduleData.title,
+                description: moduleData.description,
+                slug: moduleData.slug,
+                image: thumbnailUrl
+                    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${thumbnailUrl}`
+                    : "/farming.jpg", // Fallback image
+            });
         } else {
-          setError("Data modul tidak ditemukan atau tidak valid.");
-          setModuleData(null);
+            setError("Data modul tidak ditemukan atau tidak valid.");
+            setModuleData(null);
         }
 
       } catch (err: Error | any) {

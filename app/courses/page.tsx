@@ -7,7 +7,7 @@ import CourseSelection from "@/components/courses-component.tsx/courses-selectio
 const CoursesPage = () => {
   return (
     <div className="min-h-screen bg-white">
-      <div className="mt-16"> {/* Add margin-top to create space below navbar */}
+      <div className="mt-16"> 
         <HeroSection />
         <CourseSelection />
       </div>

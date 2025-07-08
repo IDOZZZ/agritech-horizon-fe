@@ -10,10 +10,8 @@ interface MainModuleData {
   title: string;
   description: string;
   image: string;
+  slug: string; // Add slug to the interface
 }
-
-// Use a default documentId for the main syllabus page
-const DEFAULT_MODULE_DOCUMENT_ID = "heaqzj7pkw5mp7gntgt5q6jr"; // Example documentId from your Postman
 
 const studyData = [
   {
@@ -107,34 +105,34 @@ export default function HydroponicStudyGuide() {
         const token = localStorage.getItem("token"); // Get token from localStorage
         const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
-        // Use the new endpoint and filter based on documentId for a default module, including authorization header
-        const response = await httpRequest(`/api/materials?filters[module][documentId][$eq]=${DEFAULT_MODULE_DOCUMENT_ID}&populate=module.thumbnail`, {
+        // Fetch published modules based on the user's specified endpoint
+        const response = await httpRequest(`/api/modules?filters[module_status][$eq]=Published&populate=category`, {
           method: "GET",
-          headers: headers, // Add headers to the request
+          headers: headers,
         });
 
         if (response.error) {
-          setError(response.message || "Gagal mengambil data modul utama.");
+          setError(response.message || "Gagal mengambil data modul.");
           setMainModuleData(null);
           return;
         }
 
-        // Assuming the response for materials is an array, and we want the first one
-        const material = response.data && Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
+        // Log the raw response to the console for debugging
+        console.log("API Response:", response);
 
-        if (material && material.attributes && material.attributes.module && material.attributes.module.data && material.attributes.module.data.attributes) {
-          const moduleAttributes = material.attributes.module.data.attributes;
+        // Get the first module from the response array, which has no 'attributes' layer
+        const moduleData = response.data && Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
+
+        if (moduleData) {
           setMainModuleData({
-            title: moduleAttributes.title,
-            description: moduleAttributes.description,
-            image: moduleAttributes.thumbnail?.formats?.large?.url
-              ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${moduleAttributes.thumbnail.formats.large.url}`
-              : moduleAttributes.thumbnail?.url
-              ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${moduleAttributes.thumbnail.url}`
-              : "/farming.jpg", // Fallback image
+            title: moduleData.title,
+            description: moduleData.description,
+            slug: moduleData.slug,
+            // Using fallback image as the endpoint data does not contain an image URL
+            image: "/farming.jpg",
           });
         } else {
-          setError("Data modul utama tidak ditemukan atau tidak valid.");
+          setError("Data modul tidak ditemukan atau tidak valid.");
           setMainModuleData(null);
         }
 

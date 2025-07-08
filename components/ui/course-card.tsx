@@ -6,30 +6,30 @@ import { useRouter } from "next/navigation" // Import useRouter
 import { useState, useEffect } from "react" // Import useState dan useEffect
 
 interface CourseCardProps {
-  id: number; // Keep original ID for key
-  title: string;
-  description: string;
-  image: string;
+  id: number
+  title: string
+  description: string
+  image: string
+  slug: string // Tambahkan slug untuk navigasi
 }
 
-// documentId,, category
-
-export default function CourseCard({ id,  title, description, image }: CourseCardProps) {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export default function CourseCard({ id, title, description, image, slug }: CourseCardProps) {
+  const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  }, []);
+    const token = localStorage.getItem("token")
+    setIsAuthenticated(!!token)
+  }, [])
 
   const handleBelajarSekarangClick = () => {
     if (isAuthenticated) {
-router.push(`/sylabus/${id}`); // Arahkan ke halaman silabus detail dengan id
+      // Arahkan ke halaman silabus dengan query parameter category
+      router.push(`/sylabus?category=${slug}`)
     } else {
-      router.push("/login"); // Arahkan ke halaman login jika belum login
+      router.push("/login") // Arahkan ke halaman login jika belum login
     }
-  };
+  }
 
   return (
     <div className="relative h-[400px] rounded-lg overflow-hidden group">
