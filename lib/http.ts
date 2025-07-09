@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:1337"; // Replace with your Strapi backend URL
+const BASE_URL = "http://127.0.0.1:1337"; // Replace with your Strapi backend URL
 
 export async function httpRequest(endpoint: string, options: RequestInit) {
   console.log("Sending request to:", `${BASE_URL}${endpoint}`);
