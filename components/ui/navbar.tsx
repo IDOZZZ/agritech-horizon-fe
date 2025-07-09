@@ -72,7 +72,7 @@ const Navbar = () => {
     { path: "/landing-page", label: "Home" }, // Mengarahkan Home ke /landing-page
     { path: "/about", label: "About Us" },
     { path: "/consultation", label: "Consultation" },
-    { path: "/courses", label: "Our Course" }, // Mengarahkan Our Course ke /courses
+    { path: "/courses", label: "Our Class" }, // Mengarahkan Our Course ke /courses
   ]
 
   return (
@@ -121,15 +121,15 @@ const Navbar = () => {
               <div className="items-center hidden gap-4 md:flex">
                 <Link
                   href="/login"
-                  className="px-6 py-2 text-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 rounded-sm transition-colors"
+                  className="px-6 py-2 text-white bg-[#0F5028] rounded-sm transition-colors hover:bg-[#0F5028]/90"
                 >
-                  Login
+                  Sign in
                 </Link>
                 <Link
                   href="/register"
-                  className="px-6 py-2 text-white bg-[var(--color-brand)] rounded-sm hover:bg-[var(--color-brand)]/90 transition-colors"
+                  className="px-6 py-2 text-[#0F5028] border border-[#0F5028] rounded-sm transition-colors hover:bg-[#0F5028]/5"
                 >
-                  Register
+                  Sign up
                 </Link>
               </div>
             ) : (
@@ -242,15 +242,15 @@ const Navbar = () => {
                 <div className="flex flex-col gap-2">
                   <Link
                     href="/login"
-                    className="w-full px-4 py-2 text-center text-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 rounded-sm transition-colors"
+                    className="w-full px-4 py-2 text-center text-white bg-[#0F5028] rounded-sm transition-colors hover:bg-[#0F5028]/90"
                   >
-                    Login
+                    Sign in
                   </Link>
                   <Link
                     href="/register"
-                    className="w-full px-4 py-2 text-center text-white bg-[var(--color-brand)] rounded-sm hover:bg-[var(--color-brand)]/90 transition-colors"
+                    className="w-full px-4 py-2 text-center text-[#0F5028] border border-[#0F5028] rounded-sm transition-colors hover:bg-[#0F5028]/5"
                   >
-                    Register
+                    Sign up
                   </Link>
                 </div>
               ) : (
