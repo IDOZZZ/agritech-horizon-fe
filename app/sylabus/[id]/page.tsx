@@ -122,7 +122,9 @@ export default function SyllabusDetailPage() {
           </div>
           <h1 className="mb-4 text-3xl font-bold text-gray-800">{categoryData.name}</h1>
           <p className="mb-6 text-base leading-relaxed text-[#000000]">{categoryData.description}</p>
-          <Button className="px-6 py-2 text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">Mulai Belajar</Button>
+          <Link href={categoryData.modules.length > 0 && categoryData.modules[0].materials.length > 0 ? `/materials/${categoryData.modules[0].materials[0].documentId}` : "#"} passHref>
+            <Button className="px-6 py-2 text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">Mulai Belajar</Button>
+          </Link>
         </div>
 
         {/* Study Sections from Dynamic Data */}
