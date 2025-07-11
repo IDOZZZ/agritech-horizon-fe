@@ -64,20 +64,37 @@ export default function SyllabusDetailPage() {
 
         if (response.error) {
           setError(response.message || "Gagal mengambil data kategori.")
+          console.error("API Error:", response.message); // Log API error
           return
         }
 
         const data = response.data && Array.isArray(response.data) ? response.data[0] : null
         if (data) {
-          data.modules.forEach((module: Module) => {
-            module.materials.sort((a, b) => a.order - b.order)
-          })
-          setCategoryData(data)
+          if (data.modules && Array.isArray(data.modules)) {
+            data.modules.forEach((module: Module) => {
+              if (module.materials && Array.isArray(module.materials)) {
+                module.materials.sort((a, b) => a.order - b.order);
+              } else {
+                console.log("No materials found in module:", module);
+              }
+            });
+          } else {
+            console.log("No modules found in category:", data);
+          }
+          setCategoryData(data);
+          console.log("Category Data:", data); // Log fetched data
+          if (data.modules && Array.isArray(data.modules) && data.modules.length > 0 && data.modules[0].materials.length > 0) {
+            console.log("First Material Document ID:", data.modules[0].materials[0].documentId); // Log documentId
+          } else {
+            console.log("No modules or materials found for this category.");
+          }
         } else {
           setError("Data kategori tidak ditemukan.")
+          console.error("Category data not found.");
         }
       } catch (err: any) {
         setError(err.message || "Terjadi kesalahan saat mengambil data.")
+        console.error("Fetch error:", err); // Log fetch error
       } finally {
         setIsLoading(false)
       }
@@ -122,25 +139,33 @@ export default function SyllabusDetailPage() {
           </div>
           <h1 className="mb-4 text-3xl font-bold text-gray-800">{categoryData.name}</h1>
           <p className="mb-6 text-base leading-relaxed text-[#000000]">{categoryData.description}</p>
-          <Link href={categoryData.modules.length > 0 && categoryData.modules[0].materials.length > 0 ? `/materials/${categoryData.modules[0].materials[0].documentId}` : "#"} passHref>
-            <Button className="px-6 py-2 text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">Mulai Belajar</Button>
-          </Link>
+          {categoryData.modules && categoryData.modules.length > 0 && categoryData.modules[0].materials && categoryData.modules[0].materials.length > 0 ? (
+            <Link href={`/materials/${categoryData.modules[0].materials[0].documentId}`} passHref legacyBehavior>
+              <Button className="px-6 py-2 text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)]">Mulai Belajar</Button>
+            </Link>
+          ) : (
+            <p>Tidak ada materi yang tersedia.</p>
+          )}
         </div>
 
         {/* Study Sections from Dynamic Data */}
         <div className="space-y-0">
-          {categoryData.modules.map((module, index) => (
-            <StudySection
-              key={module.id}
-              number={index + 1}
-              title={module.title}
-              description={module.description}
-              categories={module.materials.map(material => ({
-                id: material.documentId,
-                title: material.title,
-              }))}
-            />
-          ))}
+          {categoryData.modules && Array.isArray(categoryData.modules) ? (
+            categoryData.modules.map((module, index) => (
+              <StudySection
+                key={module.id}
+                number={index + 1}
+                title={module.title}
+                description={module.description}
+                categories={module.materials.map(material => ({
+                  id: material.documentId,
+                  title: material.title,
+                }))}
+              />
+            ))
+          ) : (
+            <p>Tidak ada modul yang tersedia.</p>
+          )}
         </div>
 
         {/* Call to Action Section */}

@@ -4,15 +4,17 @@ import { useState, useEffect } from "react"
 import { SectionOverview } from "@/components/materials/section-overview"
 import { SectionList } from "@/components/materials/section-list"
 import { ContentArea } from "@/components/materials/content-area"
-import { useContent } from "@/hooks/use-content"
 import { useParams } from "next/navigation"
 import { httpRequest } from "@/lib/http"
+import { BASE_URL } from "@/lib/http";
+import ReactMarkdown from 'react-markdown';
 
 interface SubSection {
   id: string
   title: string
   completed: boolean
   viewed: boolean
+  content?: string;
 }
 
 interface Section {
@@ -23,110 +25,160 @@ interface Section {
   completed: boolean
 }
 
-interface MaterialData {
-  id: number
-  documentId: string
-  title: string
-  // Tambahkan properti lain yang relevan dari API Strapi untuk materi
-  // Misalnya: content: string;
-  // Jika materi memiliki struktur nested seperti sections/subsections, definisikan di sini
+interface MaterialContent {
+  id: number;
+  documentId: string;
+  title: string;
+  content: string;
+}
+
+interface ModuleData {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  materials: MaterialContent[];
+}
+
+interface CategoryData {
+  id: number;
+  documentId: string;
+  name: string;
+  description: string;
+  thumbnail?: {
+    data: {
+      id: number;
+      attributes: {
+        url: string;
+        name: string;
+        // tambahkan properti lain jika diperlukan
+      };
+    };
+  };
+  modules: ModuleData[];
 }
 
 export default function MaterialDetailPage() {
-  const params = useParams()
-  const materialDocumentId = params.id
+  const params = useParams() // Mengambil satu ID dari URL
+  const materialDocumentId = params.id as string // ID materi dari URL
 
-  const [materialData, setMaterialData] = useState<MaterialData | null>(null)
+  const [categoryData, setCategoryData] = useState<CategoryData | null>(null)
+  const [currentMaterial, setCurrentMaterial] = useState<MaterialContent | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // State untuk struktur desain dari v0 (akan diisi dari API)
   const [sections, setSections] = useState<Section[]>([])
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({})
   const [activeSubsection, setActiveSubsection] = useState<string>("")
   const [viewedSubsections, setViewedSubsections] = useState<Set<string>>(new Set())
 
-  // Menggunakan hook useContent (akan disesuaikan nanti)
-  const { getContentForSubsection } = useContent()
 
   useEffect(() => {
     if (!materialDocumentId) {
-      setIsLoading(false)
-      setError("ID Materi tidak ditemukan.")
-      return
+      setIsLoading(false);
+      setError("ID Materi tidak ditemukan di URL.");
+      return;
     }
 
-    const fetchMaterialData = async () => {
-      setIsLoading(true)
-      setError(null)
+    const fetchMaterialAndCategoryData = async () => {
+      setIsLoading(true);
+      setError(null);
+      console.log("Fetching all categories to find material with documentId:", materialDocumentId);
       try {
-        // Endpoint API untuk mengambil detail materi
-        const response = await httpRequest(`/api/materials?filters[documentId][$eq]=${materialDocumentId}&populate=*`, {
-          method: "GET",
-        })
+        // Mengambil semua kategori dengan populate modules, materials, dan thumbnail
+        const response = await httpRequest(
+          `/api/categories?populate[modules][populate]=materials&populate=thumbnail`,
+          {
+            method: "GET",
+          }
+        );
 
         if (response.error) {
-          setError(response.message || "Gagal mengambil data materi.")
-          setMaterialData(null)
-          return
+          setError(response.message || "Gagal mengambil data kategori.");
+          setCategoryData(null);
+          setCurrentMaterial(null);
+          return;
         }
 
-        const data = response.data && Array.isArray(response.data) ? response.data[0] : null
-        if (data) {
-          setMaterialData(data)
+        const categories = response.data && Array.isArray(response.data) ? response.data : []; // Perbaikan di sini
 
-          // TODO: Map Strapi data to `sections` and `subsections` structure
-          // Untuk sementara, gunakan data statis dari study-page.tsx sebagai fallback atau contoh
-          // Ini perlu disesuaikan berdasarkan bagaimana data materi terstruktur di Strapi
-          const staticSections = [
-            {
-              id: "section1",
-              title: "Section 1",
-              subtitle: "Pengenalan Media Tanam dalam Hidroponik",
+        let foundCategory: CategoryData | null = null;
+        let foundMaterial: MaterialContent | null = null;
+        const mappedSections: Section[] = [];
+
+        // Mencari materi yang cocok di antara semua kategori
+        for (const category of categories) {
+          for (const module of category.modules) {
+            for (const material of module.materials) {
+              if (material.documentId === materialDocumentId) {
+                foundMaterial = material;
+                foundCategory = category;
+                break;
+              }
+            }
+            if (foundMaterial) break;
+          }
+          if (foundMaterial) break;
+        }
+
+        if (foundCategory && foundMaterial) {
+          setCategoryData(foundCategory);
+          setCurrentMaterial(foundMaterial);
+
+          // Membangun struktur sections dari kategori yang ditemukan
+          foundCategory.modules.forEach((module: ModuleData) => {
+            const moduleSubsections: SubSection[] = [];
+            module.materials.forEach((material: MaterialContent) => {
+              moduleSubsections.push({
+                id: `${module.id}.${material.id}`,
+                title: material.title,
+                completed: false,
+                viewed: false,
+                content: material.content,
+              });
+            });
+
+            mappedSections.push({
+              id: `module-${module.id}`,
+              title: module.title,
+              subtitle: module.description,
               completed: false,
-              subsections: [
-                { id: "1.1", title: "Definisi dan fungsi media tanam dalam sistem hidroponik", completed: true, viewed: true },
-                { id: "1.2", title: "Karakteristik media tanam yang ideal", completed: false, viewed: false },
-              ],
-            },
-            {
-              id: "section2",
-              title: "Section 2",
-              subtitle: "Jenis-jenis Media Tanam Hidroponik",
-              completed: false,
-              subsections: [
-                { id: "2.1", title: "Media tanam organik", completed: false, viewed: false },
-                { id: "2.2", title: "Media tanam anorganik", completed: false, viewed: false },
-              ],
-            },
-          ];
-          setSections(staticSections);
-          if (staticSections.length > 0 && staticSections[0].subsections.length > 0) {
-            setActiveSubsection(staticSections[0].subsections[0].id);
-            setViewedSubsections(new Set([staticSections[0].subsections[0].id]));
-            setExpandedSections({ [staticSections[0].id]: true });
+              subsections: moduleSubsections,
+            });
+          });
+          setSections(mappedSections);
+
+          // Mengatur activeSubsection dan expandedSections untuk materi yang ditemukan
+          const parentModule = foundCategory.modules.find((module: ModuleData) =>
+            module.materials.some((mat: MaterialContent) => mat.documentId === materialDocumentId)
+          );
+          if (parentModule) {
+            const subsectionId = `${parentModule.id}.${foundMaterial.id}`;
+            setActiveSubsection(subsectionId);
+            setViewedSubsections(new Set([subsectionId]));
+            setExpandedSections({ [`module-${parentModule.id}`]: true });
           }
 
         } else {
-          setError("Data materi tidak ditemukan.");
-          setMaterialData(null);
+          setError("Materi atau Kategori tidak ditemukan.");
+          setCategoryData(null);
+          setCurrentMaterial(null);
         }
       } catch (err: any) {
-        console.error("Error fetching material data:", err);
-        setError(err.message || "Terjadi kesalahan saat mengambil data materi.");
-        setMaterialData(null);
+        console.error("Error fetching data:", err);
+        setError(err.message || "Terjadi kesalahan saat mengambil data.");
+        setCategoryData(null);
+        setCurrentMaterial(null);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMaterialData();
+    fetchMaterialAndCategoryData();
   }, [materialDocumentId]);
 
-  // Get all subsection IDs in order
   const allSubsections = sections.flatMap((section) => section.subsections.map((sub) => sub.id))
 
-  // Check if section is completed when subsections are viewed
   useEffect(() => {
     setSections((prevSections) =>
       prevSections.map((section) => {
@@ -152,12 +204,11 @@ export default function MaterialDetailPage() {
   }
 
   const selectSubsection = (subsectionId: string) => {
-    const sectionNumber = subsectionId.charAt(0)
+    const moduleId = subsectionId.split('.')[0];
 
-    // Auto-expand the section containing this subsection
     setExpandedSections((prev) => ({
       ...prev,
-      [`section${sectionNumber}`]: true,
+      [`module-${moduleId}`]: true,
     }))
 
     setActiveSubsection(subsectionId)
@@ -168,18 +219,29 @@ export default function MaterialDetailPage() {
     const currentIndex = allSubsections.indexOf(activeSubsection)
     if (currentIndex < allSubsections.length - 1) {
       const nextSubsection = allSubsections[currentIndex + 1]
-      const nextSectionNumber = nextSubsection.charAt(0)
-      const currentSectionNumber = activeSubsection.charAt(0)
+      const nextModuleId = nextSubsection.split('.')[0];
+      const currentModuleId = activeSubsection.split('.')[0];
 
-      // If moving to a different section, expand it
-      if (nextSectionNumber !== currentSectionNumber) {
+      if (nextModuleId !== currentModuleId) {
         setExpandedSections((prev) => ({
           ...prev,
-          [`section${nextSectionNumber}`]: true,
+          [`module-${nextModuleId}`]: true,
         }))
       }
 
-      selectSubsection(nextSubsection)
+      let nextMaterialContent: MaterialContent | null = null;
+      categoryData?.modules.forEach(module => {
+        module.materials.forEach(material => {
+          if (`${module.id}.${material.id}` === nextSubsection) {
+            nextMaterialContent = material;
+          }
+        });
+      });
+
+      if (nextMaterialContent) {
+        setCurrentMaterial(nextMaterialContent);
+        selectSubsection(nextSubsection);
+      }
     }
   }
 
@@ -187,26 +249,34 @@ export default function MaterialDetailPage() {
     const currentIndex = allSubsections.indexOf(activeSubsection)
     if (currentIndex > 0) {
       const previousSubsection = allSubsections[currentIndex - 1]
-      const previousSectionNumber = previousSubsection.charAt(0)
-      const currentSectionNumber = activeSubsection.charAt(0)
+      const previousModuleId = previousSubsection.split('.')[0];
+      const currentModuleId = activeSubsection.split('.')[0];
 
-      // If moving to a different section, expand it
-      if (previousSectionNumber !== currentSectionNumber) {
+      if (previousModuleId !== currentModuleId) {
         setExpandedSections((prev) => ({
           ...prev,
-          [`section${previousSectionNumber}`]: true,
+          [`module-${previousModuleId}`]: true,
         }))
       }
 
-      selectSubsection(previousSubsection)
+      let previousMaterialContent: MaterialContent | null = null;
+      categoryData?.modules.forEach(module => {
+        module.materials.forEach(material => {
+          if (`${module.id}.${material.id}` === previousSubsection) {
+            previousMaterialContent = material;
+          }
+        });
+      });
+
+      if (previousMaterialContent) {
+        setCurrentMaterial(previousMaterialContent);
+        selectSubsection(previousSubsection);
+      }
     }
   }
 
   const navigateToNextModule = () => {
-    // Simulate navigation to next module
     alert("Navigating to next module: Sistem Nutrisi Hidroponik")
-    // In a real app, this would use router.push() or similar
-    // router.push('/modules/nutrisi-hidroponik')
   }
 
   const currentIndex = allSubsections.indexOf(activeSubsection)
@@ -214,8 +284,17 @@ export default function MaterialDetailPage() {
   const canGoNext = currentIndex < allSubsections.length - 1
   const isLastSubsection = currentIndex === allSubsections.length - 1
 
-  const currentContent = getContentForSubsection(activeSubsection)
-  const currentSection = sections.find((s) => s.id === `section${activeSubsection.charAt(0)}`)
+  const currentSection = sections.find((section) =>
+    section.subsections.some((sub) => sub.id === activeSubsection)
+  );
+  const currentSubsection = currentSection?.subsections.find(
+    (sub) => sub.id === activeSubsection
+  );
+
+ const currentContent = {
+    title: currentMaterial?.title || "Konten Tidak Ditemukan",
+    content:  currentMaterial?.content || "<p>Silakan pilih sub-bagian untuk melihat konten.</p>",
+  };
 
   if (isLoading) {
     return (
@@ -233,13 +312,17 @@ export default function MaterialDetailPage() {
     )
   }
 
-  if (!materialData) {
+  if (!categoryData || !currentMaterial) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Materi tidak ditemukan.</p>
+        <p>Materi atau Kategori tidak ditemukan.</p>
       </div>
     )
   }
+
+  const categoryThumbnailUrl = categoryData.thumbnail?.data?.attributes?.url
+    ? `${BASE_URL}${categoryData.thumbnail.data.attributes.url}`
+    : undefined;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -259,8 +342,8 @@ export default function MaterialDetailPage() {
       {/* Main Content Area */}
       <div className="flex-1 p-8">
         <ContentArea
-          sectionTitle={`Section ${activeSubsection.charAt(0)}`}
-          sectionSubtitle={currentSection?.subtitle || ""}
+          sectionTitle={categoryData.name || "Kategori"}
+          sectionSubtitle={categoryData.description || ""}
           contentTitle={currentContent.title}
           contentBody={currentContent.content}
           currentProgress={viewedSubsections.size}
@@ -268,9 +351,10 @@ export default function MaterialDetailPage() {
           canGoPrevious={canGoPrevious}
           canGoNext={canGoNext}
           isLastSubsection={isLastSubsection}
-          onPrevious={navigateToPrevious}
-          onNext={navigateToNext}
-          onNextModule={navigateToNextModule}
+          onPrevious={navigateToPrevious} // Meneruskan fungsi navigateToPrevious
+          onNext={navigateToNext}     // Meneruskan fungsi navigateToNext
+          onNextModule={navigateToNextModule} // Meneruskan fungsi navigateToNextModule
+          thumbnailUrl={categoryThumbnailUrl}
         />
       </div>
     </div>

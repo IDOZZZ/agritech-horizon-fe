@@ -2,12 +2,13 @@ import Image from "next/image"
 import { ProgressBar } from "./progress-bar"
 import { NavigationButtons } from "./navigation-buttons"
 import React from "react"
+import ReactMarkdown from "react-markdown"
 
 interface ContentAreaProps {
   sectionTitle: string
   sectionSubtitle: string
   contentTitle: string
-  contentBody: string // Changed type to string
+  contentBody: string
   currentProgress: number
   totalProgress: number
   canGoPrevious: boolean
@@ -16,6 +17,7 @@ interface ContentAreaProps {
   onPrevious: () => void
   onNext: () => void
   onNextModule: () => void
+  thumbnailUrl?: string; // Tambahkan prop thumbnailUrl
 }
 
 export function ContentArea({
@@ -31,7 +33,10 @@ export function ContentArea({
   onPrevious,
   onNext,
   onNextModule,
+  thumbnailUrl, // Destrukturisasi thumbnailUrl
 }: ContentAreaProps) {
+  const defaultThumbnail = "/img/hero.png"; // Path ke gambar default
+
   return (
     <div className="flex-1 p-8">
       <div className="max-w-4xl">
@@ -43,8 +48,8 @@ export function ContentArea({
         {/* Hero Image */}
         <div className="mb-6">
           <Image
-            src="/hydroponic-plants.png"
-            alt="Hydroponic plants being handled with gloves"
+            src={thumbnailUrl || defaultThumbnail} // Gunakan thumbnailUrl jika ada, jika tidak gunakan default
+            alt={`${sectionTitle} thumbnail`} // Alt text yang lebih deskriptif
             width={800}
             height={400}
             className="w-full h-64 object-cover rounded-lg"
@@ -56,7 +61,7 @@ export function ContentArea({
         {/* Dynamic Content */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">{contentTitle}</h2>
-          <div dangerouslySetInnerHTML={{ __html: contentBody }} /> {/* Render HTML string */}
+          <ReactMarkdown>{contentBody}</ReactMarkdown>
         </div>
 
         <NavigationButtons
