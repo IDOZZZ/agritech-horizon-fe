@@ -26,11 +26,17 @@ interface Section {
   completed: boolean
 }
 
+interface ContentBlock {
+  id: number;
+  __component: string;
+  body: string;
+}
+
 interface MaterialContent {
   id: number;
   documentId: string;
   title: string;
-  content: string;
+  content_blocks: ContentBlock[];
 }
 
 interface ModuleData {
@@ -89,7 +95,7 @@ export default function MaterialDetailPage() {
       try {
         // Mengambil semua kategori dengan populate modules, materials, dan thumbnail
         const response = await httpRequest(
-          `/api/categories?populate[modules][populate]=materials&populate=thumbnail`,
+          `/api/categories?populate[modules][populate][materials][populate]=content_blocks&populate=thumbnail`,
           {
             method: "GET",
           }
@@ -131,12 +137,13 @@ export default function MaterialDetailPage() {
           foundCategory.modules.forEach((module: ModuleData) => {
             const moduleSubsections: SubSection[] = [];
             module.materials.forEach((material: MaterialContent) => {
+              const combinedContent = material.content_blocks?.map(block => block.body).join('\n\n') || '';
               moduleSubsections.push({
                 id: `${module.id}.${material.id}`,
                 title: material.title,
                 completed: false,
                 viewed: false,
-                content: material.content,
+                content: combinedContent,
               });
             });
 
@@ -293,9 +300,9 @@ export default function MaterialDetailPage() {
     (sub) => sub.id === activeSubsection
   );
 
- const currentContent = {
+  const currentContent = {
     title: currentMaterial?.title || "Konten Tidak Ditemukan",
-    content:  currentMaterial?.content || "<p>Silakan pilih sub-bagian untuk melihat konten.</p>",
+    content: currentMaterial?.content_blocks?.map(block => block.body).join('\n\n') || "<p>Silakan pilih sub-bagian untuk melihat konten.</p>",
   };
 
   if (isLoading) {
