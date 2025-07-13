@@ -8,6 +8,7 @@ import { useParams } from "next/navigation"
 import { httpRequest } from "@/lib/http"
 import { BASE_URL } from "@/lib/http";
 import ReactMarkdown from 'react-markdown';
+import { List } from '@phosphor-icons/react'; // Import List icon
 
 interface SubSection {
   id: string
@@ -71,6 +72,7 @@ export default function MaterialDetailPage() {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({})
   const [activeSubsection, setActiveSubsection] = useState<string>("")
   const [viewedSubsections, setViewedSubsections] = useState<Set<string>>(new Set())
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State untuk mengontrol visibilitas sidebar
 
 
   useEffect(() => {
@@ -325,9 +327,16 @@ export default function MaterialDetailPage() {
     : undefined;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 p-6">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+      {/* Sidebar untuk mobile (slide-in) dan desktop */}
+      <div className={`fixed top-16 bottom-0 right-0 z-[9999] w-80 bg-white border-l border-gray-200 p-6 transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:relative md:translate-x-0 md:block transition-transform duration-300 ease-in-out overflow-y-auto translate-z-0`}> {/* Menyesuaikan posisi, menambahkan overflow-y-auto, dan translate-z-0 */}
+        <button
+          className="absolute top-4 right-4 text-gray-600 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        >
+          {/* Icon close (X) */}
+          &times;
+        </button>
         <SectionOverview sections={sections} />
 
         <SectionList
@@ -338,6 +347,15 @@ export default function MaterialDetailPage() {
           onSelectSubsection={selectSubsection}
         />
       </div>
+
+      {/* Tombol sticky untuk membuka sidebar di mobile */}
+      <button
+        className="fixed top-1/2 right-0 -translate-y-1/2 transform -translate-x-1/2 bg-gray-800 text-white p-3 rounded-l-full shadow-lg z-30 md:hidden"
+        onClick={() => setIsSidebarOpen(true)}
+        aria-label="Buka Menu Sidebar"
+      >
+        <List size={24} weight="bold" /> {/* Ikon Phosphor List */}
+      </button>
 
       {/* Main Content Area */}
       <div className="flex-1 p-8">
@@ -351,9 +369,9 @@ export default function MaterialDetailPage() {
           canGoPrevious={canGoPrevious}
           canGoNext={canGoNext}
           isLastSubsection={isLastSubsection}
-          onPrevious={navigateToPrevious} // Meneruskan fungsi navigateToPrevious
-          onNext={navigateToNext}     // Meneruskan fungsi navigateToNext
-          onNextModule={navigateToNextModule} // Meneruskan fungsi navigateToNextModule
+          onPrevious={navigateToPrevious}
+          onNext={navigateToNext}
+          onNextModule={navigateToNextModule}
           thumbnailUrl={categoryThumbnailUrl}
         />
       </div>
