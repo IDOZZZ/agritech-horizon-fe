@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="space-y-4"> {/* Tambah sedikit ruang */}
             <div className="flex items-center">
               {/* Menggunakan gambar logo */}
-              <img src="/img/horizon-logo-green.png" alt="Agritech Horizon Logo" className="w-auto h-10" /> {/* Sesuaikan ukuran */}
+              <img src="/horizon-logo1.svg" alt="Agritech Horizon Logo" className="w-auto h-12" /> {/* Sesuaikan ukuran */}
             </div>
             <p className="pr-4 text-sm leading-relaxed text-gray-600"> {/* Ubah ukuran font dan leading */}
               Agritech Horizon adalah platform edukasi terkemuka untuk pertanian modern. Kami menyediakan kursus praktis dan mendalam untuk membantu Anda menguasai teknik pertanian inovatif dan berkelanjutan.

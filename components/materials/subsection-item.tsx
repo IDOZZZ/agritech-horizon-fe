@@ -1,6 +1,5 @@
 import React from 'react';
-import { CheckCircleIcon, CircleIcon } from 'lucide-react'; // Assuming lucide-react is installed
-import { cn } from '@/lib/utils'; // Assuming cn utility is available
+import { cn } from '@/lib/utils';
 
 interface SubSection {
   id: string;
@@ -16,22 +15,22 @@ interface SubsectionItemProps {
 }
 
 export function SubsectionItem({ subsection, isActive, onSelect }: SubsectionItemProps) {
+  // Menambahkan nomor sub-bagian dari judul
+  const subsectionNumber = subsection.title.split(' ')[0];
+  const subsectionText = subsection.title.substring(subsectionNumber.length + 1);
+
   return (
     <button
       className={cn(
-        "flex w-full items-center space-x-2 rounded-lg p-2 text-left text-sm",
-        isActive ? "bg-green-50 text-green-700" : "bg-white text-gray-600 hover:bg-gray-100", // Adjusted active background to green, default to white
-        subsection.viewed && "font-medium",
+        "w-full rounded-lg p-2 text-left text-sm",
+        isActive ? "text-green-700" : "text-gray-400 hover:bg-gray-50",
       )}
       onClick={() => onSelect(subsection.id)}
     >
-      {subsection.completed ? (
-        <CheckCircleIcon className={cn("h-4 w-4", isActive ? "text-green-500" : "text-gray-400")} /> // Green when active, gray otherwise
-      ) : (
-        <CircleIcon className="h-4 w-4 text-gray-400" />
-      )}
-      <span className={cn(isActive && "text-green-700")}> {/* Apply active text color to green */}
-        {subsection.title}
+      <span>
+        <span className={cn("font-medium", isActive ? "text-green-600" : "text-gray-500")}>{subsectionNumber}</span>
+        {' '}
+        {subsectionText}
       </span>
     </button>
   );

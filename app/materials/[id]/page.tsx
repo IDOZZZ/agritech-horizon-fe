@@ -8,7 +8,7 @@ import { useParams } from "next/navigation"
 import { httpRequest } from "@/lib/http"
 import { BASE_URL } from "@/lib/http";
 import ReactMarkdown from 'react-markdown';
-import { List } from '@phosphor-icons/react'; // Import List icon
+import { List } from '@phosphor-icons/react';
 
 interface SubSection {
   id: string
@@ -58,7 +58,6 @@ interface CategoryData {
       attributes: {
         url: string;
         name: string;
-        // tambahkan properti lain jika diperlukan
       };
     };
   };
@@ -66,8 +65,8 @@ interface CategoryData {
 }
 
 export default function MaterialDetailPage() {
-  const params = useParams() // Mengambil satu ID dari URL
-  const materialDocumentId = params.id as string // ID materi dari URL
+  const params = useParams()
+  const materialDocumentId = params.id as string
 
   const [categoryData, setCategoryData] = useState<CategoryData | null>(null)
   const [currentMaterial, setCurrentMaterial] = useState<MaterialContent | null>(null)
@@ -78,8 +77,7 @@ export default function MaterialDetailPage() {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({})
   const [activeSubsection, setActiveSubsection] = useState<string>("")
   const [viewedSubsections, setViewedSubsections] = useState<Set<string>>(new Set())
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State untuk mengontrol visibilitas sidebar
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!materialDocumentId) {
@@ -91,30 +89,20 @@ export default function MaterialDetailPage() {
     const fetchMaterialAndCategoryData = async () => {
       setIsLoading(true);
       setError(null);
-      console.log("Fetching all categories to find material with documentId:", materialDocumentId);
       try {
-        // Mengambil semua kategori dengan populate modules, materials, dan thumbnail
         const response = await httpRequest(
-          `/api/categories?populate[modules][populate][materials][populate]=content_blocks&populate=thumbnail`,
-          {
-            method: "GET",
-          }
+          `/api/categories?populate[modules][populate][materials][populate]=content_blocks&populate[thumbnail][populate]=*`,
+          { method: "GET" }
         );
 
         if (response.error) {
-          setError(response.message || "Gagal mengambil data kategori.");
-          setCategoryData(null);
-          setCurrentMaterial(null);
-          return;
+          throw new Error(response.message || "Gagal mengambil data kategori.");
         }
 
-        const categories = response.data && Array.isArray(response.data) ? response.data : []; // Perbaikan di sini
-
+        const categories = response.data && Array.isArray(response.data) ? response.data : [];
         let foundCategory: CategoryData | null = null;
         let foundMaterial: MaterialContent | null = null;
-        const mappedSections: Section[] = [];
 
-        // Mencari materi yang cocok di antara semua kategori
         for (const category of categories) {
           for (const module of category.modules) {
             for (const material of module.materials) {
@@ -133,31 +121,21 @@ export default function MaterialDetailPage() {
           setCategoryData(foundCategory);
           setCurrentMaterial(foundMaterial);
 
-          // Membangun struktur sections dari kategori yang ditemukan
-          foundCategory.modules.forEach((module: ModuleData) => {
-            const moduleSubsections: SubSection[] = [];
-            module.materials.forEach((material: MaterialContent) => {
-              const combinedContent = material.content_blocks?.map(block => block.body).join('\n\n') || '';
-              moduleSubsections.push({
-                id: `${module.id}.${material.id}`,
-                title: material.title,
-                completed: false,
-                viewed: false,
-                content: combinedContent,
-              });
-            });
-
-            mappedSections.push({
-              id: `module-${module.id}`,
-              title: module.title,
-              subtitle: module.description,
+          const mappedSections: Section[] = foundCategory.modules.map((module: ModuleData) => ({
+            id: `module-${module.id}`,
+            title: module.title,
+            subtitle: module.description,
+            completed: false,
+            subsections: module.materials.map((material: MaterialContent) => ({
+              id: `${module.id}.${material.id}`,
+              title: material.title,
               completed: false,
-              subsections: moduleSubsections,
-            });
-          });
+              viewed: false,
+              content: material.content_blocks?.map(block => block.body).join('\n\n') || '',
+            })),
+          }));
           setSections(mappedSections);
 
-          // Mengatur activeSubsection dan expandedSections untuk materi yang ditemukan
           const parentModule = foundCategory.modules.find((module: ModuleData) =>
             module.materials.some((mat: MaterialContent) => mat.documentId === materialDocumentId)
           );
@@ -167,17 +145,11 @@ export default function MaterialDetailPage() {
             setViewedSubsections(new Set([subsectionId]));
             setExpandedSections({ [`module-${parentModule.id}`]: true });
           }
-
         } else {
           setError("Materi atau Kategori tidak ditemukan.");
-          setCategoryData(null);
-          setCurrentMaterial(null);
         }
       } catch (err: any) {
-        console.error("Error fetching data:", err);
         setError(err.message || "Terjadi kesalahan saat mengambil data.");
-        setCategoryData(null);
-        setCurrentMaterial(null);
       } finally {
         setIsLoading(false);
       }
@@ -186,12 +158,10 @@ export default function MaterialDetailPage() {
     fetchMaterialAndCategoryData();
   }, [materialDocumentId]);
 
-  const allSubsections = sections.flatMap((section) => section.subsections.map((sub) => sub.id))
-
   useEffect(() => {
     setSections((prevSections) =>
       prevSections.map((section) => {
-        const allSubsectionsViewed = section.subsections.every((sub) => viewedSubsections.has(sub.id))
+        const allSubsectionsViewed = section.subsections.every((sub) => viewedSubsections.has(sub.id));
         return {
           ...section,
           completed: allSubsectionsViewed,
@@ -200,188 +170,133 @@ export default function MaterialDetailPage() {
             viewed: viewedSubsections.has(sub.id),
             completed: viewedSubsections.has(sub.id),
           })),
-        }
+        };
       }),
-    )
-  }, [viewedSubsections])
+    );
+  }, [viewedSubsections]);
 
   const toggleSection = (sectionKey: string) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [sectionKey]: !prev[sectionKey],
-    }))
-  }
+    setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+  };
 
   const selectSubsection = (subsectionId: string) => {
     const moduleId = subsectionId.split('.')[0];
+    setExpandedSections((prev) => ({ ...prev, [`module-${moduleId}`]: true }));
+    setActiveSubsection(subsectionId);
+    setViewedSubsections((prev) => new Set([...prev, subsectionId]));
 
-    setExpandedSections((prev) => ({
-      ...prev,
-      [`module-${moduleId}`]: true,
-    }))
+    const material = categoryData?.modules
+      .flatMap(m => m.materials)
+      .find(mat => `${categoryData?.modules.find(m => m.materials.some(material => material.id === mat.id))?.id}.${mat.id}` === subsectionId);
+    
+    if (material) {
+        setCurrentMaterial(material);
+    }
+  };
 
-    setActiveSubsection(subsectionId)
-    setViewedSubsections((prev) => new Set([...prev, subsectionId]))
-  }
+  const allSubsections = sections.flatMap((section) => section.subsections.map((sub) => sub.id));
+  const currentIndex = allSubsections.indexOf(activeSubsection);
 
   const navigateToNext = () => {
-    const currentIndex = allSubsections.indexOf(activeSubsection)
     if (currentIndex < allSubsections.length - 1) {
-      const nextSubsection = allSubsections[currentIndex + 1]
-      const nextModuleId = nextSubsection.split('.')[0];
-      const currentModuleId = activeSubsection.split('.')[0];
-
-      if (nextModuleId !== currentModuleId) {
-        setExpandedSections((prev) => ({
-          ...prev,
-          [`module-${nextModuleId}`]: true,
-        }))
-      }
-
-      let nextMaterialContent: MaterialContent | null = null;
-      categoryData?.modules.forEach(module => {
-        module.materials.forEach(material => {
-          if (`${module.id}.${material.id}` === nextSubsection) {
-            nextMaterialContent = material;
-          }
-        });
-      });
-
-      if (nextMaterialContent) {
-        setCurrentMaterial(nextMaterialContent);
-        selectSubsection(nextSubsection);
-      }
+      selectSubsection(allSubsections[currentIndex + 1]);
     }
-  }
+  };
 
   const navigateToPrevious = () => {
-    const currentIndex = allSubsections.indexOf(activeSubsection)
     if (currentIndex > 0) {
-      const previousSubsection = allSubsections[currentIndex - 1]
-      const previousModuleId = previousSubsection.split('.')[0];
-      const currentModuleId = activeSubsection.split('.')[0];
-
-      if (previousModuleId !== currentModuleId) {
-        setExpandedSections((prev) => ({
-          ...prev,
-          [`module-${previousModuleId}`]: true,
-        }))
-      }
-
-      let previousMaterialContent: MaterialContent | null = null;
-      categoryData?.modules.forEach(module => {
-        module.materials.forEach(material => {
-          if (`${module.id}.${material.id}` === previousSubsection) {
-            previousMaterialContent = material;
-          }
-        });
-      });
-
-      if (previousMaterialContent) {
-        setCurrentMaterial(previousMaterialContent);
-        selectSubsection(previousSubsection);
-      }
+      selectSubsection(allSubsections[currentIndex - 1]);
     }
-  }
+  };
 
   const navigateToNextModule = () => {
-    alert("Navigating to next module: Sistem Nutrisi Hidroponik")
+    alert("Navigating to next module: Sistem Nutrisi Hidroponik");
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen"><p>Memuat materi...</p></div>;
   }
 
-  const currentIndex = allSubsections.indexOf(activeSubsection)
-  const canGoPrevious = currentIndex > 0
-  const canGoNext = currentIndex < allSubsections.length - 1
-  const isLastSubsection = currentIndex === allSubsections.length - 1
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen"><p className="text-red-500">Error: {error}</p></div>;
+  }
 
-  const currentSection = sections.find((section) =>
-    section.subsections.some((sub) => sub.id === activeSubsection)
-  );
-  const currentSubsection = currentSection?.subsections.find(
-    (sub) => sub.id === activeSubsection
-  );
+  if (!categoryData || !currentMaterial) {
+    return <div className="flex items-center justify-center min-h-screen"><p>Materi atau Kategori tidak ditemukan.</p></div>;
+  }
 
+  const currentSection = sections.find((section) => section.subsections.some((sub) => sub.id === activeSubsection));
   const currentContent = {
     title: currentMaterial?.title || "Konten Tidak Ditemukan",
     content: currentMaterial?.content_blocks?.map(block => block.body).join('\n\n') || "<p>Silakan pilih sub-bagian untuk melihat konten.</p>",
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Memuat materi...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Error: {error}</p>
-      </div>
-    )
-  }
-
-  if (!categoryData || !currentMaterial) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Materi atau Kategori tidak ditemukan.</p>
-      </div>
-    )
-  }
-
   const categoryThumbnailUrl = categoryData.thumbnail?.data?.attributes?.url
     ? `${BASE_URL}${categoryData.thumbnail.data.attributes.url}`
     : undefined;
 
+  const SidebarContent = () => (
+    <>
+      <SectionOverview sections={sections} />
+      <SectionList
+        sections={sections}
+        expandedSections={expandedSections}
+        activeSubsection={activeSubsection}
+        onToggleSection={toggleSection}
+        onSelectSubsection={selectSubsection}
+      />
+    </>
+  );
+
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Sidebar untuk mobile (slide-in) dan desktop */}
-      <div className={`fixed top-16 bottom-0 right-0 z-[9999] w-80 bg-white border-l border-gray-200 p-6 transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:relative md:translate-x-0 md:block transition-transform duration-300 ease-in-out overflow-y-auto translate-z-0`}> {/* Menyesuaikan posisi, menambahkan overflow-y-auto, dan translate-z-0 */}
-        <button
-          className="absolute top-4 right-4 text-gray-600 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          {/* Icon close (X) */}
-          &times;
-        </button>
-        <SectionOverview sections={sections} />
-
-        <SectionList
-          sections={sections}
-          expandedSections={expandedSections}
-          activeSubsection={activeSubsection}
-          onToggleSection={toggleSection}
-          onSelectSubsection={selectSubsection}
-        />
-      </div>
-
-      {/* Tombol sticky untuk membuka sidebar di mobile */}
-      <button
-        className="fixed top-1/2 right-0 -translate-y-1/2 transform -translate-x-1/2 bg-gray-800 text-white p-3 rounded-l-full shadow-lg z-30 md:hidden"
-        onClick={() => setIsSidebarOpen(true)}
-        aria-label="Buka Menu Sidebar"
-      >
-        <List size={24} weight="bold" /> {/* Ikon Phosphor List */}
-      </button>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar for desktop */}
+      <aside className="w-96 bg-white border-r border-gray-200 overflow-y-auto p-6">
+        <SidebarContent />
+      </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 p-8">
+      <main className="flex-1 p-8 overflow-y-auto pt-16">
         <ContentArea
-          sectionTitle={categoryData.name || "Kategori"}
-          sectionSubtitle={categoryData.description || ""}
+          sectionTitle={categoryData.name}
+          sectionSubtitle={currentSection?.title || ""}
           contentTitle={currentContent.title}
           contentBody={currentContent.content}
           currentProgress={viewedSubsections.size}
           totalProgress={allSubsections.length}
-          canGoPrevious={canGoPrevious}
-          canGoNext={canGoNext}
-          isLastSubsection={isLastSubsection}
+          canGoPrevious={currentIndex > 0}
+          canGoNext={currentIndex < allSubsections.length - 1}
+          isLastSubsection={currentIndex === allSubsections.length - 1}
           onPrevious={navigateToPrevious}
           onNext={navigateToNext}
           onNextModule={navigateToNextModule}
           thumbnailUrl={categoryThumbnailUrl}
         />
+      </main>
+
+      {/* Mobile slide-in sidebar */}
+      <div className={`fixed inset-0 z-50 md:hidden ${isSidebarOpen ? 'block' : 'hidden'}`}>
+        <div className="fixed inset-0 bg-black/30" onClick={() => setIsSidebarOpen(false)}></div>
+        <div className="fixed top-0 left-0 h-full w-80 bg-white border-r border-gray-200 p-6 transform transition-transform duration-300 ease-in-out overflow-y-auto">
+          <button
+            className="absolute top-4 right-4 text-gray-600"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            &times;
+          </button>
+          <SidebarContent />
+        </div>
       </div>
+
+      {/* Mobile sidebar toggle */}
+      {!isSidebarOpen && (
+        <button
+          className="fixed top-20 left-0 bg-gray-800 text-white p-3 rounded-r-full shadow-lg z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(true)}
+          aria-label="Buka Menu Sidebar"
+        >
+          <List size={24} weight="bold" />
+        </button>
+      )}
     </div>
-  )
+  );
 }

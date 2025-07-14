@@ -35,7 +35,7 @@ export function NavigationButtons({
         Previous
       </Button>
       <Button
-        className="flex items-center gap-2 bg-black hover:bg-gray-800"
+        className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white"
         onClick={handleNext}
         disabled={!canGoNext && !isLastSubsection}
       >

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDownIcon, ChevronRightIcon, PlayCircleIcon, CheckCircleIcon } from 'lucide-react';
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SubsectionItem } from './subsection-item';
 
@@ -34,36 +34,35 @@ export function SectionList({
   onSelectSubsection,
 }: SectionListProps) {
   return (
-    <div className="mt-6 space-y-2">
-      {sections.map((section) => (
-        <div key={section.id} className="rounded-lg bg-white border border-gray-200"> {/* Changed background and added border */}
+    <div className="mt-6 space-y-4">
+      {sections.map((section, index) => (
+        <div key={section.id} className="rounded-lg bg-green-50 p-4">
           <button
-            className="flex w-full items-center justify-between p-4 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
+            className="flex w-full items-center justify-between text-left"
             onClick={() => onToggleSection(section.id)}
           >
-            <div className="flex items-center space-x-3">
-              <PlayCircleIcon className="h-5 w-5 text-gray-500" />
-              <span className="text-gray-900">{section.title}: {section.subtitle}</span> {/* Text color to black */}
+            <div>
+              <p className="text-lg font-bold text-gray-800">Section {index + 1}</p>
+              <p className="text-gray-700">{section.title}</p>
             </div>
-            <div className="flex items-center space-x-2">
-              {section.completed && <CheckCircleIcon className="h-4 w-4 text-gray-400 fill-gray-400" />} {/* Checkmark icon to gray and filled */}
-              {expandedSections[section.id] ? (
-                <ChevronDownIcon className="h-4 w-4" />
-              ) : (
-                <ChevronRightIcon className="h-4 w-4" />
-              )}
-            </div>
+            {expandedSections[section.id] ? (
+              <ChevronUpIcon className="h-6 w-6 text-gray-700" />
+            ) : (
+              <ChevronDownIcon className="h-6 w-6 text-gray-700" />
+            )}
           </button>
           {expandedSections[section.id] && (
-            <div className="space-y-1 px-4 pb-4">
-              {section.subsections.map((subsection) => (
-                <SubsectionItem
-                  key={subsection.id}
-                  subsection={subsection}
-                  isActive={activeSubsection === subsection.id}
-                  onSelect={onSelectSubsection}
-                />
-              ))}
+            <div className="mt-4 rounded-lg border border-gray-200 bg-white p-2">
+              <div className="space-y-1">
+                {section.subsections.map((subsection) => (
+                  <SubsectionItem
+                    key={subsection.id}
+                    subsection={subsection}
+                    isActive={activeSubsection === subsection.id}
+                    onSelect={onSelectSubsection}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>

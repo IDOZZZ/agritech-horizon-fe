@@ -8,7 +8,7 @@ export default function HeroSection() {
         <div className="order-2 lg:order-1">
           <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
             <Image
-              src="/farmer-1.jpg"
+              src="/img/Category_header_img.jpg"
               alt="Hands in gloves handling small green plants and seedlings"
               fill
               className="object-cover"
@@ -19,20 +19,14 @@ export default function HeroSection() {
 
         {/* Content */}
         <div className="order-1 space-y-6 lg:order-2">
-          <h1 className="text-4xl font-bold leading-tight text-gray-900 font-heading lg:text-5xl">
+          <h1 className="text-4xl md:text-6xl font-semibold leading-tight text-gray-900 font-heading" style={{ lineHeight: '120%' }}>
             Tingkatkan Keahlian Pertanianmu bersama kami
           </h1>
 
-          <p className="text-lg leading-relaxed text-gray-600">
+          <p className="text-xl md:text-2xl leading-relaxed text-black" style={{ lineHeight: '120%' }}>
             Kursus lengkap dan praktis untuk semua level, dari pemula hingga profesional. Belajar sesuai ritme dan
             kebutuhanmu.
           </p>
-
-          <div className="pt-4">
-            <button className="px-8 py-3 font-medium text-white transition-colors bg-[var(--color-brand)] rounded-lg hover:bg-[var(--color-brand-hover)]">
-              Mulai Sekarang
-            </button>
-          </div>
         </div>
       </div>
     </section>
