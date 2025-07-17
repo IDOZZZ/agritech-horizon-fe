@@ -28,6 +28,8 @@ export const metadata = {
     creator: '@agritechhorizon',
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: '/Horizon-icon.svg',
+    shortcut: '/Horizon-icon.svg',
+    apple: '/Horizon-icon.svg',
   },
 }

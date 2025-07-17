@@ -1,4 +1,4 @@
-export const BASE_URL = "http://127.0.0.1:1337"; // Replace with your Strapi backend URL
+export const BASE_URL = "https://backend.horizone.biz.id"; // Replace with your Strapi backend URL
 
 export async function httpRequest(endpoint: string, options: RequestInit) {
   console.log("Sending request to:", `${BASE_URL}${endpoint}`);
@@ -11,7 +11,9 @@ export async function httpRequest(endpoint: string, options: RequestInit) {
         "Content-Type": "application/json",
         ...(options.headers || {}),
         // Tambahkan header Authorization jika token tersedia
-        ...(typeof window !== 'undefined' && localStorage.getItem('token')
+        // Ensure token is only added if it exists and we are in a browser environment
+        // Do not add Authorization header for public endpoints like /api/categories
+        ...(typeof window !== 'undefined' && localStorage.getItem('token') && endpoint !== "/api/categories"
           ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
           : {}),
       },

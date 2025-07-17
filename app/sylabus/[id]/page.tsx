@@ -130,7 +130,7 @@ export default function SyllabusDetailPage() {
         <div className="mb-8">
           <div className="mb-6">
             <Image
-              src={categoryData.thumbnail ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${categoryData.thumbnail.url}` : "/farming.jpg"}
+              src={categoryData.thumbnail ? `https://backend.horizone.biz.id${categoryData.thumbnail.url}` : "/farming.jpg"}
               alt={categoryData.name}
               width={800}
               height={300}

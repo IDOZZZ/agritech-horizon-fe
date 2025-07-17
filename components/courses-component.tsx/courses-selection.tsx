@@ -93,7 +93,7 @@ export default function CourseSelection() {
                   id={category.id}
                   title={category.name}
                   description={category.description}
-                  image={category.thumbnail ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"}${category.thumbnail.url}` : "/farming.jpg"}
+image={category.thumbnail ? `https://backend.horizone.biz.id${category.thumbnail.url}` : "/farming.jpg"}
                   slug={category.slug}
                   documentId={category.documentId}
                 />

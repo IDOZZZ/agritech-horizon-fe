@@ -14,8 +14,14 @@ const nextConfig: NextConfig = {
         port: '1337',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'backend.horizone.biz.id',
+        pathname: '**',
+      },
     ],
     dangerouslyAllowSVG: true,
+    // unoptimized: true,
   },
 
   eslint: {
